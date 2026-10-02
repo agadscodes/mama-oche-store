@@ -201,6 +201,35 @@ export default function Page() {
     }
   }, [cart, cartHydrated])
 
+  // Prevent background scroll bleed when any modal or drawer is open across all mobile/desktop browsers
+  useEffect(() => {
+    const isAnyModalOpen = menuOpen || cartOpen || accountOpen || trackOpen || !!selectedProduct || authModalOpen
+    if (isAnyModalOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [menuOpen, cartOpen, accountOpen, trackOpen, selectedProduct, authModalOpen])
+
+  // Support standard keyboard navigation (Escape key) across Chrome, Safari, Firefox, Edge
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        if (selectedProduct) setSelectedProduct(null)
+        else if (trackOpen) setTrackOpen(false)
+        else if (authModalOpen) setAuthModalOpen(false)
+        else if (menuOpen) setMenuOpen(false)
+        else if (accountOpen) setAccountOpen(false)
+        else if (cartOpen) setCartOpen(false)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [selectedProduct, trackOpen, authModalOpen, menuOpen, accountOpen, cartOpen])
+
   // Clean up toast timer on unmount
   useEffect(() => {
     return () => {
@@ -469,10 +498,57 @@ export default function Page() {
   }
 
   function copyShareLink(product: Product) {
-    if (typeof window !== 'undefined') {
-      const shareUrl = `${window.location.origin}#shop`
-      navigator.clipboard?.writeText(`${product.name} - ${formatNaira(product.price)} at Mama Oche: ${shareUrl}`)
-      showToast('Product link copied to clipboard!')
+    if (typeof window === 'undefined') return
+    const shareUrl = `${window.location.origin}#shop`
+    const shareText = `${product.name} - ${formatNaira(product.price)} at Mama Oche: ${shareUrl}`
+
+    if (navigator.share) {
+      navigator
+        .share({
+          title: `${product.name} | Mama Oche Provisions Abuja`,
+          text: shareText,
+          url: shareUrl,
+        })
+        .catch(() => {
+          fallbackClipboardCopy(shareText)
+        })
+      return
+    }
+
+    fallbackClipboardCopy(shareText)
+  }
+
+  function fallbackClipboardCopy(text: string) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard
+        .writeText(text)
+        .then(() => showToast('Product link copied to clipboard!'))
+        .catch(() => execCommandCopy(text))
+    } else {
+      execCommandCopy(text)
+    }
+  }
+
+  function execCommandCopy(text: string) {
+    try {
+      const textarea = document.createElement('textarea')
+      textarea.value = text
+      textarea.style.position = 'fixed'
+      textarea.style.top = '0'
+      textarea.style.left = '0'
+      textarea.style.opacity = '0'
+      document.body.appendChild(textarea)
+      textarea.focus()
+      textarea.select()
+      const successful = document.execCommand('copy')
+      document.body.removeChild(textarea)
+      if (successful) {
+        showToast('Product link copied to clipboard!')
+      } else {
+        showToast('Link: ' + text)
+      }
+    } catch {
+      showToast('Link: ' + text)
     }
   }
 
@@ -605,7 +681,7 @@ export default function Page() {
 
         {/* Sidebar panel */}
         <aside
-          className={`absolute right-0 top-0 flex h-full w-[85vw] max-w-sm flex-col bg-white shadow-2xl transition-transform duration-300 ease-out pb-safe ${
+          className={`absolute right-0 top-0 flex h-full h-[100dvh] w-[85vw] max-w-sm flex-col bg-white shadow-2xl transition-transform duration-300 ease-out pb-safe ${
             menuOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
@@ -1243,7 +1319,7 @@ export default function Page() {
 
       {/* Product Quick View Modal */}
       {selectedProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
+        <div className="fixed inset-0 z-50 overflow-hidden flex items-center justify-center p-3 sm:p-4">
           <div
             className="absolute inset-0 bg-[#10231c]/45 backdrop-blur-sm"
             onClick={() => setSelectedProduct(null)}
@@ -1360,7 +1436,7 @@ export default function Page() {
 
       {/* Order Tracking Modal */}
       {trackOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
+        <div className="fixed inset-0 z-50 overflow-hidden flex items-center justify-center p-3 sm:p-4">
           <div
             className="absolute inset-0 bg-[#10231c]/45 backdrop-blur-sm"
             onClick={() => setTrackOpen(false)}
@@ -1522,13 +1598,13 @@ export default function Page() {
 
       {/* Account & Order History Drawer */}
       {accountOpen && (
-        <div className="fixed inset-0 z-50">
+        <div className="fixed inset-0 z-50 overflow-hidden">
           <button
             aria-label="Close account drawer"
             onClick={() => setAccountOpen(false)}
             className="absolute inset-0 bg-[#10231c]/35 backdrop-blur-sm"
           />
-          <aside className="absolute right-0 top-0 flex h-full w-full sm:max-w-md flex-col bg-white shadow-2xl">
+          <aside className="absolute right-0 top-0 flex h-full h-[100dvh] w-full sm:max-w-md flex-col bg-white shadow-2xl pb-safe">
             <div className="flex items-center justify-between border-b border-[#e2eee8] p-4 sm:p-5">
               <div>
                 <h2 className="font-serif text-xl sm:text-2xl font-bold">Account &amp; Orders</h2>
@@ -1714,13 +1790,13 @@ export default function Page() {
 
       {/* Basket & Checkout Drawer */}
       {cartOpen && (
-        <div className="fixed inset-0 z-50">
+        <div className="fixed inset-0 z-50 overflow-hidden">
           <button
             aria-label="Close basket"
             onClick={() => setCartOpen(false)}
             className="absolute inset-0 bg-[#10231c]/35 backdrop-blur-sm"
           />
-          <aside className="absolute right-0 top-0 flex h-full w-full sm:max-w-md flex-col bg-white shadow-2xl">
+          <aside className="absolute right-0 top-0 flex h-full h-[100dvh] w-full sm:max-w-md flex-col bg-white shadow-2xl pb-safe">
             {/* Drawer Header */}
             <div className="flex items-center justify-between border-b border-[#e2eee8] p-4 sm:p-5">
               <div className="flex items-center gap-2 sm:gap-2.5">

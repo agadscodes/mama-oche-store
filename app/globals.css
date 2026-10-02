@@ -124,17 +124,27 @@ html {
   * {
     @apply border-border outline-ring/50;
     -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
   }
   html {
     -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
     overflow-x: hidden;
     max-width: 100%;
+    scroll-behavior: smooth;
   }
   body {
     @apply bg-background text-foreground;
     overflow-x: hidden;
     max-width: 100%;
     touch-action: manipulation;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
   }
   /* Prevent iOS Safari auto-zoom on input focus */
   @media screen and (max-width: 768px) {
@@ -144,7 +154,7 @@ html {
   }
 }
 
-/* Utilities for touch devices & horizontal scrolling */
+/* Utilities for touch devices, horizontal scrolling, & safe areas */
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -159,8 +169,10 @@ html {
   }
   .pb-safe {
     padding-bottom: max(1.25rem, calc(env(safe-area-inset-bottom, 0px) + 0.5rem));
+    padding-bottom: max(1.25rem, calc(constant(safe-area-inset-bottom, 0px) + 0.5rem));
   }
   .bottom-safe {
     bottom: max(1.25rem, calc(env(safe-area-inset-bottom, 0px) + 0.75rem));
+    bottom: max(1.25rem, calc(constant(safe-area-inset-bottom, 0px) + 0.75rem));
   }
 }
