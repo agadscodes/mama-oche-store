@@ -564,12 +564,13 @@ export default function Page() {
 
             <button
               onClick={openBasket}
-              className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-[#0b5b43] px-4 py-3 text-sm font-bold text-white shadow-xl shadow-[#0b5b43]/25 transition hover:-translate-y-0.5 hover:bg-[#074835]"
+              aria-label="Your basket"
+              className="flex items-center gap-1.5 rounded-full bg-[#0b5b43] px-3.5 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-[#074835]"
             >
-              <ShoppingBag size={18} />
+              <ShoppingBag size={15} />
               <span className="hidden sm:inline">Your basket</span>
               {itemCount > 0 && (
-                <span className="grid h-5 min-w-5 place-items-center rounded-full bg-[#b7f2cc] px-1 text-[11px] text-[#0b5b43]">
+                <span className="grid h-4 min-w-4 place-items-center rounded-full bg-[#b7f2cc] px-1 text-[10px] text-[#0b5b43]">
                   {itemCount}
                 </span>
               )}
@@ -1968,6 +1969,19 @@ export default function Page() {
             )}
           </aside>
         </div>
+      )}
+
+      {/* Mobile Floating Cart Indicator (only on mobile when items in basket) */}
+      {itemCount > 0 && !cartOpen && (
+        <button
+          onClick={openBasket}
+          aria-label="Open basket"
+          className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-[#0b5b43] px-3.5 py-2.5 text-xs font-bold text-white shadow-lg shadow-[#0b5b43]/30 transition hover:bg-[#074835] md:hidden"
+        >
+          <ShoppingBag size={15} />
+          <span>{itemCount} {itemCount === 1 ? 'item' : 'items'}</span>
+          <span className="font-mono font-bold">· {formatNaira(subtotal)}</span>
+        </button>
       )}
 
       {/* Auth Modal (Google & Email Sign In / Sign Up) */}
