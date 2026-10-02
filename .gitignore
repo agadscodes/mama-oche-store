@@ -1,32 +1,15 @@
-# Dependencies
-/node_modules
-/.pnpm-store
-
-# Next.js build output
-/.next/
-/out/
-
-# Environment variables (DO NOT COMMIT SENSITIVE KEYS)
-.env
-.env*.local
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Vercel & Sandbox
-.vercel
-__v0_*
+# v0 sandbox internal files
+__v0_runtime_loader.js
+__v0_devtools.tsx
+__v0_jsx-dev-runtime.ts
 .snowflake/
 .v0-trash/
+.vercel/
 
-# Debug logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-*.log
+# Environment variables
+.env*.local
 
-# OS generated files
+# Common ignores
+node_modules
+.next/
 .DS_Store
-Thumbs.db
