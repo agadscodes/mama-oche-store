@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase/admin'
-import { DEFAULT_PRODUCTS, OrderItem } from '@/lib/store-data'
+import { DEFAULT_PRODUCTS, OrderItem, STORE_CONFIG } from '@/lib/store-data'
 
 export async function POST(request: Request) {
   try {
@@ -195,7 +195,7 @@ export async function POST(request: Request) {
 
                 <div style="margin-top: 28px; padding-top: 18px; border-top: 1px solid #f0f6f2; text-align: center; color: #71847b; font-size: 12px; line-height: 1.5;">
                   <p style="margin: 0;">Payment Method: <strong>Cash or Bank Transfer on Delivery</strong></p>
-                  <p style="margin: 6px 0 0;">Need immediate changes? Call our dispatch line: <strong>09034006248</strong></p>
+                  <p style="margin: 6px 0 0;">Need immediate changes? Call our dispatch line: <strong>${STORE_CONFIG.PHONE}</strong></p>
                 </div>
               </div>
             </div>

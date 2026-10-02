@@ -1480,7 +1480,7 @@ export default function Page() {
                   <label className="block text-xs font-bold uppercase tracking-wider text-[#4f665b]">
                     Phone Number (Optional verification)
                     <input
-                      placeholder="e.g. 0903 400 6248"
+                      placeholder="e.g. 0808 305 8624"
                       value={trackPhone}
                       onChange={(e) => setTrackPhone(e.target.value)}
                       autoComplete="tel"
@@ -2002,7 +2002,7 @@ export default function Page() {
                       <input
                         required
                         type="tel"
-                        placeholder="e.g. 0903 400 6248"
+                        placeholder="e.g. 0808 305 8624"
                         value={customer.phone}
                         onChange={(e) => setCustomer({ ...customer, phone: e.target.value })}
                         autoComplete="tel"

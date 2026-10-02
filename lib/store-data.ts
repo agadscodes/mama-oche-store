@@ -51,8 +51,8 @@ export const STOREFRONT_CATEGORIES = ['All products', ...PRODUCT_CATEGORIES] as 
 export const STORE_CONFIG = {
   NAME: 'Mama Oche',
   TAGLINE: 'Fresh provisions delivered with care',
-  PHONE: process.env.NEXT_PUBLIC_STORE_PHONE || '09034006248',
-  WHATSAPP: process.env.NEXT_PUBLIC_STORE_WHATSAPP || '2349034006248',
+  PHONE: process.env.NEXT_PUBLIC_STORE_PHONE || '080830586248',
+  WHATSAPP: process.env.NEXT_PUBLIC_STORE_WHATSAPP || '23480830586248',
   EMAIL: process.env.NEXT_PUBLIC_STORE_EMAIL || 'orders@mamaoche.ng',
   LOCATION: 'Abuja, Nigeria',
   FREE_DELIVERY_THRESHOLD: 20000,

@@ -76,7 +76,7 @@ A modern, production-grade e-commerce web application built for **Mama Oche Groc
 
 ### 💬 WhatsApp Commerce
 - **Order via WhatsApp**: Formats full basket with itemized breakdown, address, and total directly into a WhatsApp message.
-- **Dispatch Support**: Instant contact link with Abuja dispatch team via `09034006248`.
+- **Dispatch Support**: Instant contact link with Abuja dispatch team via `080830586248`.
 
 ### 🛡️ Store Admin Portal (`/admin`)
 - **Protected Management Area**: Dashboard for the store manager to view inbound orders, update statuses (`pending`, `confirmed`, `delivered`, `cancelled`), and manage catalog inventory.
@@ -168,8 +168,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
 
 # Store Configuration (Abuja, Nigeria)
-NEXT_PUBLIC_STORE_PHONE=09034006248
-NEXT_PUBLIC_STORE_WHATSAPP=2349034006248
+NEXT_PUBLIC_STORE_PHONE=080830586248
+NEXT_PUBLIC_STORE_WHATSAPP=23480830586248
 NEXT_PUBLIC_STORE_EMAIL=orders@mamaoche.ng
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
@@ -227,8 +227,8 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 - **Store Name**: Mama Oche Provisions
 - **Operating Location**: Abuja, Federal Capital Territory, Nigeria
-- **Dispatch Phone**: `08034006248`
-- **WhatsApp Support**: `+2348034006248`
+- **Dispatch Phone**: `080830586248`
+- **WhatsApp Support**: `+23480830586248`
 - **Official Email**: `orders@mamaoche.ng`
 - **Delivery Policy**: Flat `₦1,000` delivery across Abuja; **FREE delivery** on orders of `₦20,000` and above.
 - **Payment Method**: Cash on delivery or instant bank transfer upon delivery inspection.

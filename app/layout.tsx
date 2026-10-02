@@ -115,7 +115,7 @@ const jsonLd = {
       url: baseUrl,
       description:
         'Fresh groceries, pantry staples, clean rice, and wholesale provisions delivered same-day across Abuja with pay on arrival.',
-      telephone: '+2349034006248',
+      telephone: '+23480830586248',
       priceRange: '₦₦',
       image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=85',
       address: {
