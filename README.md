@@ -227,8 +227,8 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 - **Store Name**: Mama Oche Provisions
 - **Operating Location**: Abuja, Federal Capital Territory, Nigeria
-- **Dispatch Phone**: `09034006248`
-- **WhatsApp Support**: `+2349034006248`
+- **Dispatch Phone**: `08034006248`
+- **WhatsApp Support**: `+2348034006248`
 - **Official Email**: `orders@mamaoche.ng`
 - **Delivery Policy**: Flat `₦1,000` delivery across Abuja; **FREE delivery** on orders of `₦20,000` and above.
 - **Payment Method**: Cash on delivery or instant bank transfer upon delivery inspection.
