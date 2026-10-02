@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
-import { cleanSupabaseUrl } from '@/lib/supabase/client'
+
+function cleanSupabaseUrl(url?: string | null): string {
+  if (!url) return ''
+  return url.trim().replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '')
+}
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
@@ -43,4 +47,3 @@ export async function GET(request: Request) {
   // URL to redirect to after sign in process completes or fails
   return NextResponse.redirect(`${origin}${next}`)
 }
-
