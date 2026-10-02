@@ -123,8 +123,41 @@ html {
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    -webkit-tap-highlight-color: transparent;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
   }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
+    touch-action: manipulation;
+  }
+  /* Prevent iOS Safari auto-zoom on input focus */
+  @media screen and (max-width: 768px) {
+    input, select, textarea {
+      font-size: 16px !important;
+    }
+  }
+}
+
+/* Utilities for touch devices & horizontal scrolling */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .touch-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  .pb-safe {
+    padding-bottom: max(1.25rem, calc(env(safe-area-inset-bottom, 0px) + 0.5rem));
+  }
+  .bottom-safe {
+    bottom: max(1.25rem, calc(env(safe-area-inset-bottom, 0px) + 0.75rem));
   }
 }

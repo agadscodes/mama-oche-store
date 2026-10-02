@@ -103,7 +103,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
       />
 
       {/* Modal Dialog */}
-      <div className="relative z-10 w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl transition-all">
+      <div className="relative z-10 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl bg-white p-5 sm:p-6 shadow-2xl transition-all touch-scroll">
         {/* Modal Header */}
         <div className="flex items-center justify-between pb-3">
           <div className="flex items-center gap-2.5">
@@ -128,8 +128,8 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
           </button>
         </div>
 
-        <div className="mt-3 text-center">
-          <h3 className="font-serif text-2xl font-bold text-[#10231c]">
+        <div className="mt-2 sm:mt-3 text-center">
+          <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#10231c]">
             {tab === 'signin' ? 'Sign in to your account' : 'Create an account'}
           </h3>
           <p className="mt-1.5 text-xs text-[#60736a]">
@@ -214,14 +214,16 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
               <label className="block text-xs font-bold uppercase tracking-wider text-[#4f665b]">
                 Full Name
                 <div className="relative mt-1">
-                  <User size={16} className="absolute left-3.5 top-3 text-[#71847b]" />
+                  <User size={16} className="absolute left-3.5 top-3.5 text-[#71847b]" />
                   <input
                     required
+                    name="name"
+                    autoComplete="name"
                     type="text"
                     placeholder="e.g. Mrs. Amina Okafor"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full rounded-xl border border-[#d7e8dc] pl-10 pr-3.5 py-2.5 text-sm text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
+                    className="w-full rounded-xl border border-[#d7e8dc] pl-10 pr-3.5 py-3 text-base sm:text-sm text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
                   />
                 </div>
               </label>
@@ -232,14 +234,17 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
             <label className="block text-xs font-bold uppercase tracking-wider text-[#4f665b]">
               Email Address
               <div className="relative mt-1">
-                <Mail size={16} className="absolute left-3.5 top-3 text-[#71847b]" />
+                <Mail size={16} className="absolute left-3.5 top-3.5 text-[#71847b]" />
                 <input
                   required
+                  name="email"
+                  autoComplete="email"
+                  inputMode="email"
                   type="email"
                   placeholder="name@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-xl border border-[#d7e8dc] pl-10 pr-3.5 py-2.5 text-sm text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
+                  className="w-full rounded-xl border border-[#d7e8dc] pl-10 pr-3.5 py-3 text-base sm:text-sm text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
                 />
               </div>
             </label>
@@ -249,15 +254,17 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
             <label className="block text-xs font-bold uppercase tracking-wider text-[#4f665b]">
               Password
               <div className="relative mt-1">
-                <Lock size={16} className="absolute left-3.5 top-3 text-[#71847b]" />
+                <Lock size={16} className="absolute left-3.5 top-3.5 text-[#71847b]" />
                 <input
                   required
+                  name="password"
+                  autoComplete={tab === 'signup' ? 'new-password' : 'current-password'}
                   type="password"
                   placeholder="••••••••"
                   minLength={6}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-xl border border-[#d7e8dc] pl-10 pr-3.5 py-2.5 text-sm text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
+                  className="w-full rounded-xl border border-[#d7e8dc] pl-10 pr-3.5 py-3 text-base sm:text-sm text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
                 />
               </div>
             </label>

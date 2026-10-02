@@ -514,7 +514,7 @@ export default function AdminPage() {
                           <button
                             key={status}
                             onClick={() => updateOrderStatus(order.id, status)}
-                            className={`rounded-full px-3 py-1 text-xs font-bold capitalize transition ${
+                            className={`rounded-full px-3 py-1.5 min-h-[32px] text-xs font-bold capitalize transition active:scale-95 ${
                               order.status === status
                                 ? status === 'delivered'
                                   ? 'bg-[#0b5b43] text-white'
@@ -574,7 +574,7 @@ export default function AdminPage() {
                     placeholder="e.g. Mama Gold Parboiled Rice"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-2.5 text-sm font-normal outline-none focus:ring-2 focus:ring-[#b7e9c8]"
+                    className="mt-1 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-3 text-base sm:text-sm font-normal outline-none focus:ring-2 focus:ring-[#b7e9c8]"
                   />
                 </label>
               </div>
@@ -585,7 +585,7 @@ export default function AdminPage() {
                   <select
                     value={form.category}
                     onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-[#d7e8dc] bg-white px-3.5 py-2.5 text-sm font-normal outline-none focus:ring-2 focus:ring-[#b7e9c8]"
+                    className="mt-1 w-full rounded-xl border border-[#d7e8dc] bg-white px-3.5 py-3 text-base sm:text-sm font-normal outline-none focus:ring-2 focus:ring-[#b7e9c8]"
                   >
                     {PRODUCT_CATEGORIES.map((cat) => (
                       <option key={cat} value={cat}>
@@ -606,7 +606,7 @@ export default function AdminPage() {
                     placeholder="88000"
                     value={form.price}
                     onChange={(e) => setForm({ ...form, price: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-2.5 text-sm font-normal outline-none focus:ring-2 focus:ring-[#b7e9c8]"
+                    className="mt-1 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-3 text-base sm:text-sm font-normal outline-none focus:ring-2 focus:ring-[#b7e9c8]"
                   />
                 </label>
 
@@ -617,7 +617,7 @@ export default function AdminPage() {
                     placeholder="50kg bag, carton of 40..."
                     value={form.unit}
                     onChange={(e) => setForm({ ...form, unit: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-2.5 text-sm font-normal outline-none focus:ring-2 focus:ring-[#b7e9c8]"
+                    className="mt-1 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-3 text-base sm:text-sm font-normal outline-none focus:ring-2 focus:ring-[#b7e9c8]"
                   />
                 </label>
               </div>
@@ -630,7 +630,7 @@ export default function AdminPage() {
                     placeholder="https://images.unsplash.com/..."
                     value={form.image}
                     onChange={(e) => setForm({ ...form, image: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-2.5 text-sm font-normal outline-none focus:ring-2 focus:ring-[#b7e9c8]"
+                    className="mt-1 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-3 text-base sm:text-sm font-normal outline-none focus:ring-2 focus:ring-[#b7e9c8]"
                   />
                 </label>
               </div>
@@ -642,7 +642,7 @@ export default function AdminPage() {
                     placeholder="Stone-free long grain parboiled rice..."
                     value={form.description}
                     onChange={(e) => setForm({ ...form, description: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-2.5 text-sm font-normal outline-none focus:ring-2 focus:ring-[#b7e9c8]"
+                    className="mt-1 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-3 text-base sm:text-sm font-normal outline-none focus:ring-2 focus:ring-[#b7e9c8]"
                   />
                 </label>
               </div>

@@ -479,22 +479,22 @@ export default function Page() {
   return (
     <main className="min-h-screen bg-[#fbfdfb] text-[#10231c]">
       {/* Top Announcement Bar */}
-      <div className="bg-[#0b5b43] px-5 py-2.5 text-center text-xs font-medium tracking-wide text-white">
+      <div className="bg-[#0b5b43] px-3 sm:px-5 py-2 sm:py-2.5 text-center text-[11px] sm:text-xs font-medium tracking-wide text-white leading-tight sm:leading-normal">
         Free delivery on orders above ₦{STORE_CONFIG.FREE_DELIVERY_THRESHOLD.toLocaleString('en-NG')} · Same-day doorstep delivery across Abuja
       </div>
 
       {/* Main Navigation Header */}
       <header className="sticky top-0 z-30 border-b border-[#e2eee8] bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 py-4 lg:px-8">
-          <a href="#top" className="flex items-center gap-3" aria-label="Mama Oche home">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#d7f6e4] text-lg font-black text-[#0b5b43]">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 sm:gap-6 px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
+          <a href="#top" className="flex items-center gap-2.5 sm:gap-3" aria-label="Mama Oche home">
+            <span className="grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-xl bg-[#d7f6e4] text-base sm:text-lg font-black text-[#0b5b43]">
               M
             </span>
             <span>
-              <span className="block font-serif text-2xl font-bold leading-none text-[#0b5b43]">
+              <span className="block font-serif text-xl sm:text-2xl font-bold leading-none text-[#0b5b43]">
                 Mama Oche
               </span>
-              <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.25em] text-[#779188]">
+              <span className="mt-0.5 sm:mt-1 block text-[9px] sm:text-[10px] font-semibold uppercase tracking-[0.22em] text-[#779188]">
                 Fresh provisions · Abuja
               </span>
             </span>
@@ -518,7 +518,7 @@ export default function Page() {
             </a>
           </nav>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-1.5 sm:gap-2.5">
             <button
               onClick={() => setTrackOpen(true)}
               aria-label="Track order"
@@ -532,26 +532,27 @@ export default function Page() {
               <button
                 onClick={() => setAuthModalOpen(true)}
                 aria-label="Sign In or Sign Up"
-                className="flex items-center gap-1.5 rounded-full bg-[#0b5b43] px-3.5 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-[#074835]"
+                className="flex items-center gap-1.5 rounded-full bg-[#0b5b43] px-3 sm:px-3.5 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-[#074835]"
               >
                 <LogIn size={15} />
-                <span>Sign In / Sign Up</span>
+                <span className="hidden sm:inline">Sign In / Sign Up</span>
+                <span className="sm:hidden">Sign In</span>
               </button>
             ) : (
               <button
                 onClick={() => setAccountOpen(true)}
                 aria-label="Account profile"
-                className="flex items-center gap-2 rounded-full border border-[#0b5b43]/30 bg-[#eff9f2] px-3.5 py-2 text-xs font-bold text-[#0b5b43] transition hover:bg-[#dff5e7]"
+                className="flex items-center gap-1.5 sm:gap-2 rounded-full border border-[#0b5b43]/30 bg-[#eff9f2] px-3 sm:px-3.5 py-2 text-xs font-bold text-[#0b5b43] transition hover:bg-[#dff5e7]"
               >
                 <UserRound size={15} />
-                <span className="max-w-[100px] truncate sm:max-w-[140px]">{userEmail.split('@')[0]}</span>
+                <span className="max-w-[75px] truncate sm:max-w-[140px]">{userEmail.split('@')[0]}</span>
               </button>
             )}
 
             <button
               onClick={() => setAccountOpen(true)}
               aria-label="My Orders"
-              className="flex items-center gap-1.5 rounded-full border border-[#e2eee8] px-3 py-2 text-xs font-bold text-[#19342a] transition hover:bg-[#eff9f2]"
+              className="flex items-center gap-1.5 rounded-full border border-[#e2eee8] px-2.5 sm:px-3 py-2 text-xs font-bold text-[#19342a] transition hover:bg-[#eff9f2]"
             >
               <Package size={15} className="text-[#0b8a61]" />
               <span className="hidden sm:inline">My Orders</span>
@@ -565,7 +566,7 @@ export default function Page() {
             <button
               onClick={openBasket}
               aria-label="Your basket"
-              className="flex items-center gap-1.5 rounded-full bg-[#0b5b43] px-3.5 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-[#074835]"
+              className="flex items-center gap-1.5 rounded-full bg-[#0b5b43] px-3 sm:px-3.5 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-[#074835]"
             >
               <ShoppingBag size={15} />
               <span className="hidden sm:inline">Your basket</span>
@@ -578,7 +579,7 @@ export default function Page() {
 
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="rounded-lg p-2 text-[#10231c] hover:bg-[#eff9f2] md:hidden"
+              className="grid h-9 w-9 place-items-center rounded-lg text-[#10231c] hover:bg-[#eff9f2] md:hidden"
               aria-label="Toggle menu"
             >
               {menuOpen ? <X size={21} /> : <Menu size={21} />}
@@ -660,44 +661,44 @@ export default function Page() {
       {/* Hero Section */}
       <section
         id="top"
-        className="mx-auto grid max-w-7xl gap-10 px-5 pb-20 pt-12 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:px-8 lg:pt-20"
+        className="mx-auto grid max-w-7xl gap-8 sm:gap-10 px-4 sm:px-6 pb-16 sm:pb-20 pt-8 sm:pt-12 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:px-8 lg:pt-20"
       >
         <div>
-          <p className="mb-5 flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-[#0b8a61]">
+          <p className="mb-4 sm:mb-5 flex items-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-[#0b8a61]">
             <span className="h-2 w-2 rounded-full bg-[#31c978]" /> Serving Homes Across Abuja
           </p>
-          <h1 className="max-w-xl font-serif text-5xl font-bold leading-[1.04] tracking-tight text-[#10231c] sm:text-6xl lg:text-7xl">
+          <h1 className="max-w-xl font-serif text-3xl sm:text-5xl lg:text-7xl font-bold leading-[1.08] sm:leading-[1.04] tracking-tight text-[#10231c]">
             Good food starts with <em className="font-normal text-[#0b8a61]">good</em> provisions.
           </h1>
-          <p className="mt-6 max-w-lg text-lg leading-8 text-[#60736a]">
+          <p className="mt-4 sm:mt-6 max-w-lg text-base sm:text-lg leading-7 sm:leading-8 text-[#60736a]">
             Fresh groceries, pantry staples, and everyday essentials carefully chosen for your Abuja home.
             Delivered directly to your door with pay on arrival.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row flex-wrap gap-2.5 sm:gap-3">
             <a
               href="#shop"
-              className="flex items-center gap-2 rounded-full bg-[#0b5b43] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#0b5b43]/15 transition hover:-translate-y-0.5 hover:bg-[#074835]"
+              className="flex items-center justify-center gap-2 rounded-full bg-[#0b5b43] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#0b5b43]/15 transition hover:-translate-y-0.5 hover:bg-[#074835] active:scale-[0.98]"
             >
               Shop provisions <ArrowRight size={17} />
             </a>
             {!userEmail ? (
               <button
                 onClick={() => setAuthModalOpen(true)}
-                className="flex items-center gap-2 rounded-full border border-[#0b5b43] bg-white px-5 py-3.5 text-sm font-bold text-[#0b5b43] shadow-sm transition hover:bg-[#eff9f2]"
+                className="flex items-center justify-center gap-2 rounded-full border border-[#0b5b43] bg-white px-5 py-3.5 text-sm font-bold text-[#0b5b43] shadow-sm transition hover:bg-[#eff9f2] active:scale-[0.98]"
               >
                 <LogIn size={17} /> Sign In / Sign Up
               </button>
             ) : (
               <button
                 onClick={() => setAccountOpen(true)}
-                className="flex items-center gap-2 rounded-full border border-[#0b5b43] bg-[#eff9f2] px-5 py-3.5 text-sm font-bold text-[#0b5b43] shadow-sm transition hover:bg-[#dff5e7]"
+                className="flex items-center justify-center gap-2 rounded-full border border-[#0b5b43] bg-[#eff9f2] px-5 py-3.5 text-sm font-bold text-[#0b5b43] shadow-sm transition hover:bg-[#dff5e7] active:scale-[0.98]"
               >
                 <UserRound size={17} /> My Account & Orders
               </button>
             )}
             <button
               onClick={() => setTrackOpen(true)}
-              className="flex items-center gap-2 rounded-full border border-[#cfe6d8] bg-white px-6 py-3.5 text-sm font-bold text-[#0b5b43] transition hover:bg-[#f1f8f3]"
+              className="flex items-center justify-center gap-2 rounded-full border border-[#cfe6d8] bg-white px-6 py-3.5 text-sm font-bold text-[#0b5b43] transition hover:bg-[#f1f8f3] active:scale-[0.98]"
             >
               <Package size={17} /> Track order
             </button>
@@ -705,7 +706,7 @@ export default function Page() {
               href={`https://wa.me/${STORE_CONFIG.WHATSAPP}?text=Hello%20Mama%20Oche%2C%20I%20would%20like%20to%20order%20groceries%20in%20Abuja`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-full border border-[#25D366] bg-[#25D366]/10 px-5 py-3.5 text-sm font-bold text-[#128C7E] transition hover:bg-[#25D366]/20"
+              className="flex items-center justify-center gap-2 rounded-full border border-[#25D366] bg-[#25D366]/10 px-5 py-3.5 text-sm font-bold text-[#128C7E] transition hover:bg-[#25D366]/20 active:scale-[0.98]"
             >
               <MessageCircle size={17} /> Order on WhatsApp ({STORE_CONFIG.PHONE})
             </a>
@@ -719,15 +720,15 @@ export default function Page() {
             <img
               src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=85"
               alt="Fresh vegetables and groceries arranged on a table"
-              className="h-[360px] w-full rounded-[1.5rem] object-cover sm:h-[440px]"
+              className="h-[320px] w-full rounded-[1.5rem] object-cover sm:h-[440px]"
             />
-            <div className="absolute bottom-10 left-10 flex items-center gap-3 rounded-2xl bg-white p-3.5 pr-5 shadow-xl">
-              <span className="grid h-10 w-10 place-items-center rounded-full bg-[#d7f6e4] text-[#0b5b43]">
+            <div className="absolute bottom-4 left-4 sm:bottom-10 sm:left-10 max-w-[calc(100%-2rem)] flex items-center gap-3 rounded-2xl bg-white p-3 sm:p-3.5 pr-4 sm:pr-5 shadow-xl">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#d7f6e4] text-[#0b5b43]">
                 <ShieldCheck size={21} />
               </span>
-              <span>
-                <strong className="block text-sm">Quality you can trust</strong>
-                <small className="text-xs text-[#71847b]">Authentic brands & wholesale value</small>
+              <span className="min-w-0">
+                <strong className="block truncate text-xs sm:text-sm">Quality you can trust</strong>
+                <small className="block truncate text-[11px] sm:text-xs text-[#71847b]">Authentic brands & wholesale value</small>
               </span>
             </div>
           </div>
@@ -735,17 +736,17 @@ export default function Page() {
       </section>
 
       {/* Catalog Section */}
-      <section id="shop" className="border-y border-[#e4eee8] bg-white px-5 py-14 lg:px-8">
+      <section id="shop" className="border-y border-[#e4eee8] bg-white px-4 sm:px-6 py-10 sm:py-14 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <div className="mb-6 sm:mb-8 flex flex-col justify-between gap-4 sm:gap-5 sm:flex-row sm:items-end">
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#0b8a61]">
+              <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.16em] text-[#0b8a61]">
                 The essentials
               </p>
-              <h2 className="mt-2 font-serif text-4xl font-bold">Shop the pantry</h2>
+              <h2 className="mt-1 sm:mt-2 font-serif text-3xl sm:text-4xl font-bold">Shop the pantry</h2>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
               {/* Search Bar */}
               <div className="relative w-full sm:w-64">
                 <Search className="absolute left-3.5 top-3 text-[#8ba097]" size={18} />
@@ -754,14 +755,14 @@ export default function Page() {
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
                   placeholder="Search rice, oil, milk, soap..."
-                  className="w-full rounded-full border border-[#dbeae0] bg-[#fbfdfb] py-2.5 pl-10 pr-9 text-sm outline-none ring-[#b7e9c8] focus:ring-2"
+                  className="w-full rounded-full border border-[#dbeae0] bg-[#fbfdfb] py-2.5 pl-10 pr-9 text-base sm:text-sm outline-none ring-[#b7e9c8] focus:ring-2"
                 />
                 {search && (
                   <button
                     type="button"
                     onClick={() => setSearch('')}
                     aria-label="Clear search"
-                    className="absolute right-3 top-2.5 rounded-full p-0.5 text-[#8ba097] hover:text-[#10231c]"
+                    className="absolute right-3 top-2.5 rounded-full p-1 text-[#8ba097] hover:text-[#10231c]"
                   >
                     <X size={16} />
                   </button>
@@ -769,32 +770,32 @@ export default function Page() {
               </div>
 
               {/* Sort Filter Dropdown */}
-              <div className="relative">
+              <div className="relative w-full sm:w-auto">
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as SortOption)}
                   aria-label="Sort products"
-                  className="appearance-none rounded-full border border-[#dbeae0] bg-[#fbfdfb] py-2.5 pl-4 pr-9 text-xs font-bold text-[#19342a] outline-none hover:bg-[#eff9f2]"
+                  className="w-full appearance-none rounded-full border border-[#dbeae0] bg-[#fbfdfb] py-2.5 pl-4 pr-9 text-base sm:text-xs font-bold text-[#19342a] outline-none hover:bg-[#eff9f2]"
                 >
                   <option value="featured">Sort: Featured</option>
                   <option value="price-asc">Price: Low to High</option>
                   <option value="price-desc">Price: High to Low</option>
                   <option value="name-asc">Name: A to Z</option>
                 </select>
-                <ChevronDown size={14} className="pointer-events-none absolute right-3 top-3 text-[#5d7068]" />
+                <ChevronDown size={14} className="pointer-events-none absolute right-3 top-3.5 sm:top-3 text-[#5d7068]" />
               </div>
             </div>
           </div>
 
           {/* Category Filter Pills */}
-          <div className="mb-9 flex gap-2 overflow-x-auto pb-2">
+          <div className="no-scrollbar touch-scroll -mx-4 mb-7 sm:mb-9 flex gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
             {STOREFRONT_CATEGORIES.map((category) => {
               const count = categoryCounts[category] || 0
               return (
                 <button
                   key={category}
                   onClick={() => setActiveCategory(category)}
-                  className={`flex items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition ${
+                  className={`shrink-0 flex items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 sm:px-4 py-2 text-xs sm:text-sm font-semibold transition active:scale-95 ${
                     activeCategory === category
                       ? 'bg-[#0b5b43] text-white shadow-sm'
                       : 'bg-[#f1f8f3] text-[#61756b] hover:bg-[#dff4e7]'
@@ -814,7 +815,7 @@ export default function Page() {
           </div>
 
           {/* Product Grid */}
-          <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-6">
+          <div className="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 sm:gap-x-4 sm:gap-y-8 lg:grid-cols-4 lg:gap-x-6">
             {filteredProducts.map((product) => {
               const inStock = product.in_stock !== false
               const inBasketQty = cart.find((item) => item.id === product.id)?.quantity || 0
@@ -822,11 +823,11 @@ export default function Page() {
               return (
                 <article
                   key={product.id}
-                  className="group flex flex-col rounded-2xl p-2 transition hover:bg-[#f6fcf8]"
+                  className="group flex flex-col rounded-2xl p-1.5 sm:p-2 transition hover:bg-[#f6fcf8]"
                 >
                   <div
                     onClick={() => openProductModal(product)}
-                    className="relative mb-4 cursor-pointer overflow-hidden rounded-2xl bg-[#f1f8f3]"
+                    className="relative mb-3 sm:mb-4 cursor-pointer overflow-hidden rounded-2xl bg-[#f1f8f3]"
                   >
                     {product.image ? (
                       <img
@@ -843,7 +844,7 @@ export default function Page() {
                     )}
 
                     <span
-                      className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${
+                      className={`absolute left-2.5 top-2.5 sm:left-3 sm:top-3 rounded-full px-2 sm:px-2.5 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-wide ${
                         inStock
                           ? 'bg-white/95 text-[#0b8a61]'
                           : 'bg-[#2c3a35]/90 text-white'
@@ -853,7 +854,7 @@ export default function Page() {
                     </span>
 
                     {inBasketQty > 0 && (
-                      <span className="absolute right-3 top-3 rounded-full bg-[#0b5b43] px-2.5 py-1 text-[10px] font-bold text-white shadow">
+                      <span className="absolute right-2.5 top-2.5 sm:right-3 sm:top-3 rounded-full bg-[#0b5b43] px-2 sm:px-2.5 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-bold text-white shadow">
                         {inBasketQty} in basket
                       </span>
                     )}
@@ -865,19 +866,19 @@ export default function Page() {
                           addToCart(product)
                         }}
                         aria-label={`Add ${product.name} to basket`}
-                        className="absolute bottom-3 right-3 grid h-10 w-10 place-items-center rounded-full bg-[#0b5b43] text-white opacity-0 shadow-lg transition group-hover:opacity-100 hover:bg-[#074835] focus:opacity-100"
+                        className="absolute bottom-2.5 right-2.5 sm:bottom-3 sm:right-3 grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-full bg-[#0b5b43] text-white opacity-95 sm:opacity-0 shadow-lg transition sm:group-hover:opacity-100 hover:bg-[#074835] active:scale-95 focus:opacity-100"
                       >
-                        <Plus size={19} />
+                        <Plus size={18} />
                       </button>
                     )}
                   </div>
 
-                  <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#8a9b93]">
+                  <p className="mb-0.5 sm:mb-1 text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-[#8a9b93]">
                     {product.category}
                   </p>
                   <h3
                     onClick={() => openProductModal(product)}
-                    className="cursor-pointer font-serif text-lg font-bold leading-tight text-[#19342a] hover:text-[#0b5b43]"
+                    className="cursor-pointer font-serif text-base sm:text-lg font-bold leading-snug sm:leading-tight text-[#19342a] hover:text-[#0b5b43]"
                   >
                     {product.name}
                   </h3>
@@ -887,16 +888,16 @@ export default function Page() {
                     </p>
                   )}
 
-                  <div className="mt-auto flex items-center justify-between pt-3">
+                  <div className="mt-auto flex items-center justify-between pt-2.5 sm:pt-3">
                     <div>
-                      <span className="font-bold text-[#0b5b43]">{formatNaira(product.price)}</span>
-                      <span className="ml-1 text-xs text-[#83938c]">/ {product.unit}</span>
+                      <span className="text-sm sm:text-base font-bold text-[#0b5b43]">{formatNaira(product.price)}</span>
+                      <span className="ml-1 text-[11px] sm:text-xs text-[#83938c]">/ {product.unit}</span>
                     </div>
 
                     <button
                       disabled={!inStock}
                       onClick={() => addToCart(product)}
-                      className="rounded-full bg-[#eff9f2] px-3 py-1.5 text-xs font-bold text-[#0b5b43] transition hover:bg-[#d7f6e4] disabled:cursor-not-allowed disabled:opacity-40"
+                      className="min-h-[34px] sm:min-h-[36px] rounded-full bg-[#eff9f2] px-3 sm:px-3.5 py-1.5 text-xs font-bold text-[#0b5b43] transition hover:bg-[#d7f6e4] active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       {inStock ? '+ Add' : 'Unavailable'}
                     </button>
@@ -1067,7 +1068,7 @@ export default function Page() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Order or chat on WhatsApp"
-        className="fixed bottom-5 left-5 z-40 flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-3 text-sm font-bold text-white shadow-xl shadow-[#25D366]/30 transition hover:-translate-y-0.5 hover:bg-[#1ebd59]"
+        className="fixed bottom-safe left-4 sm:left-6 z-40 flex items-center gap-2 rounded-full bg-[#25D366] px-3.5 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-bold text-white shadow-xl shadow-[#25D366]/30 transition hover:-translate-y-0.5 hover:bg-[#1ebd59] active:scale-95"
       >
         <MessageCircle size={19} />
         <span className="hidden sm:inline">WhatsApp ({STORE_CONFIG.PHONE})</span>
@@ -1078,15 +1079,15 @@ export default function Page() {
         <div
           role="status"
           aria-live="polite"
-          className="fixed bottom-6 left-1/2 z-[60] flex -translate-x-1/2 items-center gap-3 rounded-2xl border border-[#cfe6d8] bg-white px-5 py-4 text-sm font-semibold text-[#10231c] shadow-2xl shadow-[#0b5b43]/20"
+          className="fixed bottom-safe left-1/2 z-[60] flex -translate-x-1/2 items-center gap-2.5 sm:gap-3 rounded-2xl border border-[#cfe6d8] bg-white px-4 sm:px-5 py-3 sm:py-4 text-xs sm:text-sm font-semibold text-[#10231c] shadow-2xl shadow-[#0b5b43]/20 max-w-[90vw]"
         >
-          <span className="grid h-8 w-8 place-items-center rounded-full bg-[#d7f6e4] text-[#0b5b43]">
+          <span className="grid h-7 w-7 sm:h-8 sm:w-8 shrink-0 place-items-center rounded-full bg-[#d7f6e4] text-[#0b8a61]">
             ✓
           </span>
-          {confirmation}
+          <span className="truncate">{confirmation}</span>
           <button
             onClick={() => setConfirmation('')}
-            className="ml-2 rounded-full p-1 text-[#71847b] transition hover:bg-[#eff9f2]"
+            className="ml-1 sm:ml-2 rounded-full p-1 text-[#71847b] transition hover:bg-[#eff9f2]"
             aria-label="Dismiss confirmation"
           >
             <X size={16} />
@@ -1096,15 +1097,15 @@ export default function Page() {
 
       {/* Product Quick View Modal */}
       {selectedProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
           <div
             className="absolute inset-0 bg-[#10231c]/45 backdrop-blur-sm"
             onClick={() => setSelectedProduct(null)}
           />
-          <div className="relative z-10 w-full max-w-xl overflow-hidden rounded-3xl bg-white shadow-2xl">
+          <div className="relative z-10 w-full max-w-xl max-h-[90vh] overflow-y-auto touch-scroll rounded-2xl sm:rounded-3xl bg-white shadow-2xl">
             <button
               onClick={() => setSelectedProduct(null)}
-              className="absolute right-4 top-4 z-20 rounded-full bg-white/90 p-2 text-[#5d7068] shadow-sm hover:bg-[#eff9f2]"
+              className="absolute right-3.5 top-3.5 z-20 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-[#5d7068] shadow-sm hover:bg-[#eff9f2] active:scale-95"
               aria-label="Close product view"
             >
               <X size={20} />
@@ -1116,15 +1117,15 @@ export default function Page() {
                   <img
                     src={selectedProduct.image}
                     alt={selectedProduct.name}
-                    className="h-64 w-full object-cover sm:h-full"
+                    className="h-56 sm:h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="grid h-64 w-full place-items-center bg-[#e9f8ed] sm:h-full">
+                  <div className="grid h-56 sm:h-full w-full place-items-center bg-[#e9f8ed]">
                     <Package size={48} className="text-[#0b8a61]" />
                   </div>
                 )}
                 <span
-                  className={`absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide ${
+                  className={`absolute left-3.5 top-3.5 rounded-full px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-bold uppercase tracking-wide ${
                     selectedProduct.in_stock !== false
                       ? 'bg-white/95 text-[#0b8a61]'
                       : 'bg-[#2c3a35]/90 text-white'
@@ -1134,43 +1135,43 @@ export default function Page() {
                 </span>
               </div>
 
-              <div className="flex flex-col p-6">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#0b8a61]">
+              <div className="flex flex-col p-5 sm:p-6">
+                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#0b8a61]">
                   {selectedProduct.category}
                 </span>
-                <h3 className="mt-1 font-serif text-2xl font-bold text-[#10231c]">
+                <h3 className="mt-1 font-serif text-xl sm:text-2xl font-bold text-[#10231c]">
                   {selectedProduct.name}
                 </h3>
-                <p className="mt-1 text-xs text-[#71847b]">Packaging: {selectedProduct.unit}</p>
+                <p className="mt-0.5 sm:mt-1 text-xs text-[#71847b]">Packaging: {selectedProduct.unit}</p>
 
-                <p className="mt-3 font-serif text-2xl font-bold text-[#0b5b43]">
+                <p className="mt-2.5 sm:mt-3 font-serif text-xl sm:text-2xl font-bold text-[#0b5b43]">
                   {formatNaira(selectedProduct.price)}
                 </p>
 
                 {selectedProduct.description && (
-                  <p className="mt-3 text-xs leading-5 text-[#51665d]">
+                  <p className="mt-2.5 sm:mt-3 text-xs leading-5 text-[#51665d]">
                     {selectedProduct.description}
                   </p>
                 )}
 
-                <div className="mt-6 border-t border-[#e2eee8] pt-4">
+                <div className="mt-5 sm:mt-6 border-t border-[#e2eee8] pt-4">
                   <div className="mb-4 flex items-center justify-between">
                     <span className="text-xs font-bold text-[#5d7068]">Quantity:</span>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => setModalQty((q) => Math.max(1, q - 1))}
-                        className="grid h-8 w-8 place-items-center rounded-full border border-[#d7e8dc] text-sm hover:bg-[#eff9f2]"
+                        className="grid h-9 w-9 place-items-center rounded-full border border-[#d7e8dc] text-sm hover:bg-[#eff9f2] active:scale-95"
                         aria-label="Decrease quantity"
                       >
-                        <Minus size={14} />
+                        <Minus size={15} />
                       </button>
                       <span className="w-8 text-center text-sm font-bold">{modalQty}</span>
                       <button
                         onClick={() => setModalQty((q) => q + 1)}
-                        className="grid h-8 w-8 place-items-center rounded-full border border-[#d7e8dc] text-sm hover:bg-[#eff9f2]"
+                        className="grid h-9 w-9 place-items-center rounded-full border border-[#d7e8dc] text-sm hover:bg-[#eff9f2] active:scale-95"
                         aria-label="Increase quantity"
                       >
-                        <Plus size={14} />
+                        <Plus size={15} />
                       </button>
                     </div>
                   </div>
@@ -1182,7 +1183,7 @@ export default function Page() {
                         addToCart(selectedProduct, modalQty)
                         setSelectedProduct(null)
                       }}
-                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0b5b43] py-3 text-sm font-bold text-white transition hover:bg-[#074835] disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0b5b43] py-3 text-sm font-bold text-white transition hover:bg-[#074835] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <ShoppingBag size={17} /> Add {modalQty > 1 ? `${modalQty} ` : ''}to Basket · {formatNaira(selectedProduct.price * modalQty)}
                     </button>
@@ -1191,7 +1192,7 @@ export default function Page() {
                       href={generateWhatsAppProductUrl(selectedProduct)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#25D366] bg-[#25D366]/10 py-2.5 text-xs font-bold text-[#128C7E] transition hover:bg-[#25D366]/20"
+                      className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#25D366] bg-[#25D366]/10 py-2.5 text-xs font-bold text-[#128C7E] transition hover:bg-[#25D366]/20 active:scale-[0.98]"
                     >
                       <MessageCircle size={15} /> Order on WhatsApp
                     </a>
@@ -1199,7 +1200,7 @@ export default function Page() {
                     <button
                       type="button"
                       onClick={() => copyShareLink(selectedProduct)}
-                      className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#e2eee8] py-2 text-xs font-bold text-[#5d7068] hover:bg-[#eff9f2]"
+                      className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#e2eee8] py-2 text-xs font-bold text-[#5d7068] hover:bg-[#eff9f2] active:scale-[0.98]"
                     >
                       <Share2 size={14} /> Share provision
                     </button>
@@ -1213,32 +1214,32 @@ export default function Page() {
 
       {/* Order Tracking Modal */}
       {trackOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
           <div
             className="absolute inset-0 bg-[#10231c]/45 backdrop-blur-sm"
             onClick={() => setTrackOpen(false)}
           />
-          <div className="relative z-10 w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#e2eee8] p-5">
+          <div className="relative z-10 w-full max-w-lg max-h-[90vh] overflow-y-auto touch-scroll rounded-2xl sm:rounded-3xl bg-white shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#e2eee8] p-4 sm:p-5">
               <div className="flex items-center gap-2.5">
                 <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#e9f8ed] text-[#0b8a61]">
                   <Package size={20} />
                 </span>
                 <div>
-                  <h3 className="font-serif text-xl font-bold">Track Your Order</h3>
+                  <h3 className="font-serif text-lg sm:text-xl font-bold">Track Your Order</h3>
                   <p className="text-xs text-[#71847b]">Enter your order reference number below</p>
                 </div>
               </div>
               <button
                 onClick={() => setTrackOpen(false)}
-                className="rounded-full p-2 hover:bg-[#eff9f2]"
+                className="grid h-9 w-9 place-items-center rounded-full text-[#5d7068] hover:bg-[#eff9f2] active:scale-95"
                 aria-label="Close tracking"
               >
                 <X size={20} />
               </button>
             </div>
 
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               <form onSubmit={handleTrackOrder} className="space-y-3">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-[#4f665b]">
@@ -1248,7 +1249,8 @@ export default function Page() {
                       placeholder="e.g. MO-XYZ123 or Supabase UUID"
                       value={trackRef}
                       onChange={(e) => setTrackRef(e.target.value)}
-                      className="mt-1 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-2.5 text-sm font-normal outline-none focus:ring-2 focus:ring-[#b7e9c8]"
+                      autoComplete="off"
+                      className="mt-1 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-3 text-base sm:text-sm font-normal outline-none focus:ring-2 focus:ring-[#b7e9c8]"
                     />
                   </label>
                 </div>
@@ -1259,14 +1261,16 @@ export default function Page() {
                       placeholder="e.g. 0903 400 6248"
                       value={trackPhone}
                       onChange={(e) => setTrackPhone(e.target.value)}
-                      className="mt-1 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-2.5 text-sm font-normal outline-none focus:ring-2 focus:ring-[#b7e9c8]"
+                      autoComplete="tel"
+                      inputMode="tel"
+                      className="mt-1 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-3 text-base sm:text-sm font-normal outline-none focus:ring-2 focus:ring-[#b7e9c8]"
                     />
                   </label>
                 </div>
 
                 <button
                   disabled={trackingBusy}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0b5b43] py-3 text-sm font-bold text-white transition hover:bg-[#074835] disabled:opacity-60"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0b5b43] py-3.5 text-sm font-bold text-white transition hover:bg-[#074835] active:scale-[0.98] disabled:opacity-60"
                 >
                   {trackingBusy && <LoaderCircle size={16} className="animate-spin" />}
                   Look Up Delivery Status
@@ -1280,7 +1284,7 @@ export default function Page() {
               )}
 
               {trackedOrder && (
-                <div className="mt-6 rounded-2xl border border-[#d7e8dc] bg-[#f8fcfa] p-5">
+                <div className="mt-6 rounded-2xl border border-[#d7e8dc] bg-[#f8fcfa] p-4 sm:p-5">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <span className="font-mono text-xs font-bold text-[#0b5b43]">
@@ -1359,7 +1363,7 @@ export default function Page() {
                     href={generateWhatsAppOrderHelpUrl(trackedOrder.id)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-[#25D366] bg-[#25D366]/10 py-2.5 text-xs font-bold text-[#128C7E] transition hover:bg-[#25D366]/20"
+                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-[#25D366] bg-[#25D366]/10 py-3 text-xs font-bold text-[#128C7E] transition hover:bg-[#25D366]/20 active:scale-[0.98]"
                   >
                     <MessageCircle size={15} /> Chat with Dispatch on WhatsApp ({STORE_CONFIG.PHONE})
                   </a>
@@ -1378,37 +1382,37 @@ export default function Page() {
             onClick={() => setAccountOpen(false)}
             className="absolute inset-0 bg-[#10231c]/35 backdrop-blur-sm"
           />
-          <aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#e2eee8] p-5">
+          <aside className="absolute right-0 top-0 flex h-full w-full sm:max-w-md flex-col bg-white shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#e2eee8] p-4 sm:p-5">
               <div>
-                <h2 className="font-serif text-2xl font-bold">Account &amp; Orders</h2>
-                <p className="text-sm text-[#71847b]">
+                <h2 className="font-serif text-xl sm:text-2xl font-bold">Account &amp; Orders</h2>
+                <p className="text-xs sm:text-sm text-[#71847b]">
                   {userEmail ? `Signed in as ${userEmail}` : 'View your recent orders & saved info'}
                 </p>
               </div>
               <button
                 onClick={() => setAccountOpen(false)}
-                className="rounded-full p-2 hover:bg-[#eff9f2]"
+                className="grid h-9 w-9 place-items-center rounded-full text-[#5d7068] hover:bg-[#eff9f2] active:scale-95"
                 aria-label="Close account drawer"
               >
                 <X size={20} />
               </button>
             </div>
 
-            <div className="flex-1 space-y-6 overflow-y-auto p-5">
+            <div className="flex-1 space-y-5 sm:space-y-6 overflow-y-auto touch-scroll p-4 sm:p-5">
               {/* Customer Sign-In / Profile Card */}
               <div className="rounded-2xl border border-[#e2eee8] bg-[#f8fcfa] p-4">
                 {userEmail ? (
                   <div className="flex items-center justify-between gap-3">
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-xs font-bold uppercase tracking-wider text-[#0b8a61]">
                         Verified Customer
                       </p>
-                      <p className="mt-0.5 text-sm font-bold text-[#10231c]">{userEmail}</p>
+                      <p className="mt-0.5 truncate text-sm font-bold text-[#10231c]">{userEmail}</p>
                     </div>
                     <button
                       onClick={handleSignOut}
-                      className="flex items-center gap-1.5 rounded-xl border border-[#d7e8dc] bg-white px-3 py-1.5 text-xs font-bold text-[#b13c2e] hover:bg-[#fdf2f0]"
+                      className="flex shrink-0 items-center gap-1.5 rounded-xl border border-[#d7e8dc] bg-white px-3 py-1.5 text-xs font-bold text-[#b13c2e] hover:bg-[#fdf2f0] active:scale-95"
                     >
                       <LogOut size={13} /> Sign out
                     </button>
@@ -1423,7 +1427,7 @@ export default function Page() {
                       <button
                         type="button"
                         onClick={handleGoogleSignIn}
-                        className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-[#cfe6d8] bg-white py-2.5 text-xs font-bold text-[#10231c] shadow-sm transition hover:bg-[#eff9f2]"
+                        className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-[#cfe6d8] bg-white py-3 text-xs font-bold text-[#10231c] shadow-sm transition hover:bg-[#eff9f2] active:scale-[0.98]"
                       >
                         <svg className="h-4 w-4" viewBox="0 0 24 24">
                           <path
@@ -1452,7 +1456,7 @@ export default function Page() {
                           setAccountOpen(false)
                           setAuthModalOpen(true)
                         }}
-                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0b5b43] py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#074835]"
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0b5b43] py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#074835] active:scale-[0.98]"
                       >
                         <LogIn size={14} />
                         <span>Sign In with Email / Password</span>
@@ -1550,10 +1554,10 @@ export default function Page() {
               </div>
             </div>
 
-            <div className="border-t border-[#e2eee8] p-4">
+            <div className="border-t border-[#e2eee8] p-4 pb-safe">
               <Link
                 href="/admin"
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#f1f8f3] py-2.5 text-xs font-bold text-[#0b5b43] transition hover:bg-[#d7f6e4]"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#f1f8f3] py-3 text-xs font-bold text-[#0b5b43] transition hover:bg-[#d7f6e4] active:scale-[0.98]"
               >
                 <Lock size={14} /> Go to Store Admin Portal
               </Link>
@@ -1570,27 +1574,27 @@ export default function Page() {
             onClick={() => setCartOpen(false)}
             className="absolute inset-0 bg-[#10231c]/35 backdrop-blur-sm"
           />
-          <aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl">
+          <aside className="absolute right-0 top-0 flex h-full w-full sm:max-w-md flex-col bg-white shadow-2xl">
             {/* Drawer Header */}
-            <div className="flex items-center justify-between border-b border-[#e2eee8] p-5">
-              <div className="flex items-center gap-2.5">
+            <div className="flex items-center justify-between border-b border-[#e2eee8] p-4 sm:p-5">
+              <div className="flex items-center gap-2 sm:gap-2.5">
                 {cartStep === 'checkout' && (
                   <button
                     type="button"
                     onClick={() => setCartStep('basket')}
-                    className="rounded-full p-1.5 text-[#5d7068] hover:bg-[#eff9f2]"
+                    className="grid h-9 w-9 place-items-center rounded-full text-[#5d7068] hover:bg-[#eff9f2] active:scale-95"
                     aria-label="Back to basket"
                   >
                     <ArrowLeft size={18} />
                   </button>
                 )}
                 <div>
-                  <h2 className="font-serif text-2xl font-bold">
+                  <h2 className="font-serif text-xl sm:text-2xl font-bold">
                     {cartStep === 'basket' && 'Your basket'}
                     {cartStep === 'checkout' && 'Delivery details'}
                     {cartStep === 'success' && 'Order confirmed'}
                   </h2>
-                  <p className="text-sm text-[#71847b]">
+                  <p className="text-xs sm:text-sm text-[#71847b]">
                     {cartStep === 'basket' &&
                       `${itemCount} ${itemCount === 1 ? 'item' : 'items'} · Abuja delivery`}
                     {cartStep === 'checkout' && 'Pay cash or transfer on delivery'}
@@ -1600,7 +1604,7 @@ export default function Page() {
               </div>
               <button
                 onClick={() => setCartOpen(false)}
-                className="rounded-full p-2 hover:bg-[#eff9f2]"
+                className="grid h-9 w-9 place-items-center rounded-full text-[#5d7068] hover:bg-[#eff9f2] active:scale-95"
                 aria-label="Close basket"
               >
                 <X size={20} />
@@ -1610,7 +1614,7 @@ export default function Page() {
             {/* STEP 1: BASKET VIEW */}
             {cartStep === 'basket' && (
               <>
-                <div className="flex-1 overflow-y-auto p-5">
+                <div className="flex-1 overflow-y-auto touch-scroll p-4 sm:p-5">
                   {cart.length === 0 ? (
                     <div className="grid h-full place-items-center text-center">
                       <div>
@@ -1631,7 +1635,7 @@ export default function Page() {
                         <button
                           type="button"
                           onClick={clearCart}
-                          className="flex items-center gap-1.5 rounded-lg border border-[#f0d6d4] bg-[#fff8f7] px-2.5 py-1 text-xs font-bold text-[#b13c2e] transition hover:bg-[#fdebe9]"
+                          className="flex items-center gap-1.5 rounded-lg border border-[#f0d6d4] bg-[#fff8f7] px-2.5 py-1 text-xs font-bold text-[#b13c2e] transition hover:bg-[#fdebe9] active:scale-95"
                           title="Remove all items from basket"
                         >
                           <Trash2 size={13} /> Clear basket
@@ -1654,32 +1658,32 @@ export default function Page() {
                             <img
                               src={item.image}
                               alt=""
-                              className="h-20 w-20 rounded-xl object-cover"
+                              className="h-18 w-18 sm:h-20 sm:w-20 rounded-xl object-cover"
                             />
                           ) : (
-                            <div className="grid h-20 w-20 place-items-center rounded-xl bg-[#e9f8ed]">
+                            <div className="grid h-18 w-18 sm:h-20 sm:w-20 place-items-center rounded-xl bg-[#e9f8ed]">
                               <Package size={22} className="text-[#0b8a61]" />
                             </div>
                           )}
                           <div className="min-w-0 flex-1">
-                            <h3 className="font-serif font-bold">{item.name}</h3>
+                            <h3 className="font-serif font-bold text-sm sm:text-base leading-snug">{item.name}</h3>
                             <p className="mt-0.5 text-xs text-[#71847b]">{item.unit}</p>
-                            <p className="mt-1 text-sm font-bold text-[#0b8a61]">
+                            <p className="mt-1 text-sm font-bold text-[#0b5b43]">
                               {formatNaira(item.price * item.quantity)}
                             </p>
                             <div className="mt-2 flex items-center justify-between">
-                              <div className="flex items-center gap-3">
+                              <div className="flex items-center gap-2.5 sm:gap-3">
                                 <button
                                   onClick={() => changeQuantity(item.id, -1)}
-                                  className="grid h-7 w-7 place-items-center rounded-full border border-[#d7e8dc] hover:bg-[#eff9f2]"
+                                  className="grid h-8 w-8 sm:h-7 sm:w-7 place-items-center rounded-full border border-[#d7e8dc] hover:bg-[#eff9f2] active:scale-95"
                                   aria-label="Decrease quantity"
                                 >
                                   <Minus size={13} />
                                 </button>
-                                <span className="text-sm font-bold">{item.quantity}</span>
+                                <span className="w-6 text-center text-sm font-bold">{item.quantity}</span>
                                 <button
                                   onClick={() => changeQuantity(item.id, 1)}
-                                  className="grid h-7 w-7 place-items-center rounded-full border border-[#d7e8dc] hover:bg-[#eff9f2]"
+                                  className="grid h-8 w-8 sm:h-7 sm:w-7 place-items-center rounded-full border border-[#d7e8dc] hover:bg-[#eff9f2] active:scale-95"
                                   aria-label="Increase quantity"
                                 >
                                   <Plus size={13} />
@@ -1688,7 +1692,7 @@ export default function Page() {
 
                               <button
                                 onClick={() => changeQuantity(item.id, -item.quantity)}
-                                className="text-xs text-[#9aa8a1] hover:text-[#b13c2e]"
+                                className="text-xs text-[#9aa8a1] hover:text-[#b13c2e] active:scale-95"
                                 title="Remove item"
                               >
                                 Remove
@@ -1702,16 +1706,16 @@ export default function Page() {
                 </div>
 
                 {cart.length > 0 && (
-                  <div className="border-t border-[#e2eee8] p-5">
-                    <div className="mb-2 flex justify-between text-sm text-[#71847b]">
+                  <div className="border-t border-[#e2eee8] p-4 sm:p-5 pb-safe">
+                    <div className="mb-2 flex justify-between text-xs sm:text-sm text-[#71847b]">
                       <span>Subtotal</span>
                       <span>{formatNaira(subtotal)}</span>
                     </div>
-                    <div className="mb-4 flex justify-between text-sm text-[#71847b]">
+                    <div className="mb-3 sm:mb-4 flex justify-between text-xs sm:text-sm text-[#71847b]">
                       <span>Delivery (Abuja)</span>
                       <span>{delivery === 0 ? 'Free' : formatNaira(delivery)}</span>
                     </div>
-                    <div className="mb-5 flex justify-between border-t border-[#e2eee8] pt-4 text-lg font-bold">
+                    <div className="mb-4 sm:mb-5 flex justify-between border-t border-[#e2eee8] pt-3 sm:pt-4 text-base sm:text-lg font-bold">
                       <span>Total</span>
                       <span className="text-[#0b5b43]">{formatNaira(grandTotal)}</span>
                     </div>
@@ -1720,7 +1724,7 @@ export default function Page() {
                       <button
                         type="button"
                         onClick={() => setCartStep('checkout')}
-                        className="flex w-full items-center justify-center gap-2 rounded-full bg-[#0b5b43] py-3.5 text-sm font-bold text-white transition hover:bg-[#074835]"
+                        className="flex w-full items-center justify-center gap-2 rounded-full bg-[#0b5b43] py-3.5 text-sm font-bold text-white transition hover:bg-[#074835] active:scale-[0.98]"
                       >
                         Continue to checkout <ArrowRight size={17} />
                       </button>
@@ -1729,7 +1733,7 @@ export default function Page() {
                         href={generateWhatsAppCartUrl(cart, grandTotal, customer)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex w-full items-center justify-center gap-2 rounded-full border border-[#25D366] bg-[#25D366]/10 py-3 text-xs font-bold text-[#128C7E] transition hover:bg-[#25D366]/20"
+                        className="flex w-full items-center justify-center gap-2 rounded-full border border-[#25D366] bg-[#25D366]/10 py-3 text-xs font-bold text-[#128C7E] transition hover:bg-[#25D366]/20 active:scale-[0.98]"
                       >
                         <MessageCircle size={16} /> Order Directly via WhatsApp ({STORE_CONFIG.PHONE})
                       </a>
@@ -1743,7 +1747,7 @@ export default function Page() {
                       </button>
                     </div>
 
-                    <p className="mt-3 text-center text-xs text-[#8a9b93]">
+                    <p className="mt-3 text-center text-[11px] sm:text-xs text-[#8a9b93]">
                       Cash or transfer on delivery · Pay when your order arrives in Abuja
                     </p>
                   </div>
@@ -1754,7 +1758,7 @@ export default function Page() {
             {/* STEP 2: CHECKOUT FORM */}
             {cartStep === 'checkout' && (
               <form onSubmit={submitOrder} className="flex flex-1 flex-col overflow-hidden">
-                <div className="flex-1 space-y-4 overflow-y-auto p-5">
+                <div className="flex-1 space-y-4 overflow-y-auto touch-scroll p-4 sm:p-5">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#4f665b]">
                       Full Name *
@@ -1764,7 +1768,8 @@ export default function Page() {
                         placeholder="e.g. Mrs. Amina Okafor"
                         value={customer.name}
                         onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
-                        className="mt-1.5 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-2.5 text-sm font-normal text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
+                        autoComplete="name"
+                        className="mt-1.5 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-3 text-base sm:text-sm font-normal text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
                       />
                     </label>
                   </div>
@@ -1778,7 +1783,9 @@ export default function Page() {
                         placeholder="e.g. 0903 400 6248"
                         value={customer.phone}
                         onChange={(e) => setCustomer({ ...customer, phone: e.target.value })}
-                        className="mt-1.5 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-2.5 text-sm font-normal text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
+                        autoComplete="tel"
+                        inputMode="tel"
+                        className="mt-1.5 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-3 text-base sm:text-sm font-normal text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
                       />
                     </label>
                   </div>
@@ -1791,7 +1798,9 @@ export default function Page() {
                         placeholder="For order receipt & updates"
                         value={customer.email}
                         onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
-                        className="mt-1.5 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-2.5 text-sm font-normal text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
+                        autoComplete="email"
+                        inputMode="email"
+                        className="mt-1.5 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-3 text-base sm:text-sm font-normal text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
                       />
                     </label>
                   </div>
@@ -1805,7 +1814,8 @@ export default function Page() {
                         placeholder="House number, street name, district (e.g. Maitama, Wuse 2, Gwarinpa), and nearest landmark"
                         value={customer.address}
                         onChange={(e) => setCustomer({ ...customer, address: e.target.value })}
-                        className="mt-1.5 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-2.5 text-sm font-normal text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
+                        autoComplete="street-address"
+                        className="mt-1.5 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-3 text-base sm:text-sm font-normal text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
                       />
                     </label>
                   </div>
@@ -1818,7 +1828,7 @@ export default function Page() {
                         placeholder="Gate code, estate name, call before arrival, etc."
                         value={customer.notes}
                         onChange={(e) => setCustomer({ ...customer, notes: e.target.value })}
-                        className="mt-1.5 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-2.5 text-sm font-normal text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
+                        className="mt-1.5 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-3 text-base sm:text-sm font-normal text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
                       />
                     </label>
                   </div>
@@ -1863,11 +1873,11 @@ export default function Page() {
                   )}
                 </div>
 
-                <div className="border-t border-[#e2eee8] p-5">
+                <div className="border-t border-[#e2eee8] p-4 sm:p-5 pb-safe">
                   <button
                     type="submit"
                     disabled={submittingOrder}
-                    className="flex w-full items-center justify-center gap-2 rounded-full bg-[#0b5b43] py-3.5 text-sm font-bold text-white transition hover:bg-[#074835] disabled:opacity-60"
+                    className="flex w-full items-center justify-center gap-2 rounded-full bg-[#0b5b43] py-3.5 text-sm font-bold text-white transition hover:bg-[#074835] active:scale-[0.98] disabled:opacity-60"
                   >
                     {submittingOrder && <LoaderCircle size={17} className="animate-spin" />}
                     Place Abuja order · {formatNaira(grandTotal)}
@@ -1878,14 +1888,14 @@ export default function Page() {
 
             {/* STEP 3: ORDER CONFIRMATION RECEIPT */}
             {cartStep === 'success' && completedOrder && (
-              <div className="flex flex-1 flex-col justify-between overflow-y-auto p-6">
-                <div className="space-y-5">
-                  <div className="rounded-3xl bg-[#e9f8ed] p-6 text-center">
+              <div className="flex flex-1 flex-col justify-between overflow-y-auto touch-scroll p-4 sm:p-6 pb-safe">
+                <div className="space-y-4 sm:space-y-5">
+                  <div className="rounded-3xl bg-[#e9f8ed] p-5 sm:p-6 text-center">
                     <CheckCircle2 className="mx-auto mb-3 text-[#0b8a61]" size={44} />
                     <p className="text-xs font-bold uppercase tracking-widest text-[#0b8a61]">
                       Order Received
                     </p>
-                    <h3 className="mt-1 font-serif text-2xl font-bold text-[#10231c]">
+                    <h3 className="mt-1 font-serif text-xl sm:text-2xl font-bold text-[#10231c]">
                       Thank you, {completedOrder.customer_name}!
                     </h3>
                     <p className="mt-2 text-xs leading-5 text-[#4f665b]">
@@ -1937,7 +1947,7 @@ export default function Page() {
                     href={generateWhatsAppOrderHelpUrl(completedOrder.id)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex w-full items-center justify-center gap-2 rounded-full border border-[#25D366] bg-[#25D366]/10 py-3 text-xs font-bold text-[#128C7E] transition hover:bg-[#25D366]/20"
+                    className="flex w-full items-center justify-center gap-2 rounded-full border border-[#25D366] bg-[#25D366]/10 py-3 text-xs font-bold text-[#128C7E] transition hover:bg-[#25D366]/20 active:scale-[0.98]"
                   >
                     <MessageCircle size={16} /> Notify Dispatch on WhatsApp ({STORE_CONFIG.PHONE})
                   </a>
@@ -1949,7 +1959,7 @@ export default function Page() {
                       setCartOpen(false)
                       setTrackOpen(true)
                     }}
-                    className="w-full rounded-full border border-[#cfe6d8] bg-white py-3 text-xs font-bold text-[#0b5b43] hover:bg-[#f1f8f3]"
+                    className="w-full rounded-full border border-[#cfe6d8] bg-white py-3 text-xs font-bold text-[#0b5b43] hover:bg-[#f1f8f3] active:scale-[0.98]"
                   >
                     Track Live Delivery
                   </button>
@@ -1960,7 +1970,7 @@ export default function Page() {
                       setCartOpen(false)
                       setCartStep('basket')
                     }}
-                    className="w-full rounded-full bg-[#0b5b43] py-3.5 text-sm font-bold text-white hover:bg-[#074835]"
+                    className="w-full rounded-full bg-[#0b5b43] py-3.5 text-sm font-bold text-white hover:bg-[#074835] active:scale-[0.98]"
                   >
                     Continue shopping
                   </button>
@@ -1976,7 +1986,7 @@ export default function Page() {
         <button
           onClick={openBasket}
           aria-label="Open basket"
-          className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-[#0b5b43] px-3.5 py-2.5 text-xs font-bold text-white shadow-lg shadow-[#0b5b43]/30 transition hover:bg-[#074835] md:hidden"
+          className="fixed bottom-safe right-4 sm:right-6 z-40 flex items-center gap-2 rounded-full bg-[#0b5b43] px-3.5 py-2.5 text-xs font-bold text-white shadow-lg shadow-[#0b5b43]/30 transition hover:bg-[#074835] active:scale-95 md:hidden"
         >
           <ShoppingBag size={15} />
           <span>{itemCount} {itemCount === 1 ? 'item' : 'items'}</span>
