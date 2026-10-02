@@ -127,10 +127,13 @@ html {
   }
   html {
     -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
+    max-width: 100%;
   }
   body {
     @apply bg-background text-foreground;
     overflow-x: hidden;
+    max-width: 100%;
     touch-action: manipulation;
   }
   /* Prevent iOS Safari auto-zoom on input focus */

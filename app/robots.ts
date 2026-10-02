@@ -10,7 +10,24 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: ['/admin', '/api/'],
       },
+      {
+        userAgent: [
+          'Googlebot',
+          'Bingbot',
+          'Slurp',
+          'DuckDuckBot',
+          'Baiduspider',
+          'YandexBot',
+          'Applebot',
+          'facebookexternalhit',
+          'Twitterbot',
+          'LinkedInBot',
+        ],
+        allow: '/',
+        disallow: ['/admin', '/api/'],
+      },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
+    host: baseUrl,
   }
 }

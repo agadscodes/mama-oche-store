@@ -477,7 +477,7 @@ export default function Page() {
   }
 
   return (
-    <main className="min-h-screen bg-[#fbfdfb] text-[#10231c]">
+    <main className="min-h-screen bg-[#fbfdfb] text-[#10231c] overflow-x-hidden">
       {/* Top Announcement Bar */}
       <div className="bg-[#0b5b43] px-3 sm:px-5 py-2 sm:py-2.5 text-center text-[11px] sm:text-xs font-medium tracking-wide text-white leading-tight sm:leading-normal">
         Free delivery on orders above ₦{STORE_CONFIG.FREE_DELIVERY_THRESHOLD.toLocaleString('en-NG')} · Same-day doorstep delivery across Abuja
@@ -585,224 +585,224 @@ export default function Page() {
             </button>
           </div>
         </div>
+      </header>
 
-        {/* Collapsible Mobile & Tablet Sidebar Drawer (Slides smoothly from right) */}
+      {/* Collapsible Mobile & Tablet Sidebar Drawer (Slides smoothly from right) */}
+      <div
+        className={`fixed inset-0 z-50 overflow-hidden transition-opacity duration-300 ${
+          menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        aria-hidden={!menuOpen}
+      >
+        {/* Backdrop overlay */}
         <div
-          className={`fixed inset-0 z-50 transition-opacity duration-300 ${
-            menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          onClick={() => setMenuOpen(false)}
+          className={`absolute inset-0 bg-[#10231c]/45 backdrop-blur-sm transition-opacity duration-300 ${
+            menuOpen ? 'opacity-100' : 'opacity-0'
           }`}
-          aria-hidden={!menuOpen}
-        >
-          {/* Backdrop overlay */}
-          <div
-            onClick={() => setMenuOpen(false)}
-            className={`absolute inset-0 bg-[#10231c]/45 backdrop-blur-sm transition-opacity duration-300 ${
-              menuOpen ? 'opacity-100' : 'opacity-0'
-            }`}
-            aria-label="Close menu"
-          />
+          aria-label="Close menu"
+        />
 
-          {/* Sidebar panel */}
-          <aside
-            className={`absolute right-0 top-0 flex h-full w-[85vw] max-w-sm flex-col bg-white shadow-2xl transition-transform duration-300 ease-out pb-safe ${
-              menuOpen ? 'translate-x-0' : 'translate-x-full'
-            }`}
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-[#e2eee8] px-5 py-4">
-              <div className="flex items-center gap-2.5">
-                <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#d7f6e4] text-base font-black text-[#0b5b43]">
-                  M
+        {/* Sidebar panel */}
+        <aside
+          className={`absolute right-0 top-0 flex h-full w-[85vw] max-w-sm flex-col bg-white shadow-2xl transition-transform duration-300 ease-out pb-safe ${
+            menuOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between border-b border-[#e2eee8] px-5 py-4">
+            <div className="flex items-center gap-2.5">
+              <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#d7f6e4] text-base font-black text-[#0b5b43]">
+                M
+              </span>
+              <div>
+                <span className="block font-serif text-lg font-bold leading-none text-[#0b5b43]">
+                  Mama Oche
                 </span>
-                <div>
-                  <span className="block font-serif text-lg font-bold leading-none text-[#0b5b43]">
-                    Mama Oche
-                  </span>
-                  <span className="mt-0.5 block text-[9px] font-semibold uppercase tracking-[0.2em] text-[#779188]">
-                    Fresh provisions · Abuja
-                  </span>
+                <span className="mt-0.5 block text-[9px] font-semibold uppercase tracking-[0.2em] text-[#779188]">
+                  Fresh provisions · Abuja
+                </span>
+              </div>
+            </div>
+            <button
+              onClick={() => setMenuOpen(false)}
+              className="grid h-9 w-9 place-items-center rounded-full text-[#5d7068] hover:bg-[#eff9f2] active:scale-95"
+              aria-label="Close menu"
+            >
+              <X size={20} />
+            </button>
+          </div>
+
+          {/* Content List */}
+          <div className="flex-1 space-y-4 overflow-y-auto touch-scroll px-5 py-5 text-sm font-semibold">
+            {/* Sign In / Sign Up */}
+            {!userEmail ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false)
+                  setAuthModalOpen(true)
+                }}
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0b5b43] py-3 text-sm font-bold text-white shadow-md shadow-[#0b5b43]/20 transition hover:bg-[#074835] active:scale-[0.98]"
+              >
+                <LogIn size={18} /> Sign In / Sign Up
+              </button>
+            ) : (
+              <div className="rounded-2xl border border-[#cfe6d8] bg-[#eff9f2] p-3.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <UserRound size={17} className="text-[#0b8a61] shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-[#0b8a61]">Verified Customer</p>
+                      <p className="truncate text-xs font-bold text-[#10231c]">{userEmail}</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMenuOpen(false)
+                      handleSignOut()
+                    }}
+                    className="shrink-0 text-xs font-bold text-[#b13c2e] hover:underline ml-2"
+                  >
+                    Sign out
+                  </button>
                 </div>
               </div>
+            )}
+
+            {/* Commerce actions: Your basket & My Orders */}
+            <div className="space-y-2">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[#8a9d94]">Cart & Account</p>
+
+              {/* Your basket */}
               <button
-                onClick={() => setMenuOpen(false)}
-                className="grid h-9 w-9 place-items-center rounded-full text-[#5d7068] hover:bg-[#eff9f2] active:scale-95"
-                aria-label="Close menu"
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false)
+                  openBasket()
+                }}
+                className="flex w-full items-center justify-between rounded-xl border border-[#cfe6d8] bg-[#f8fcfa] p-3 text-[#10231c] transition hover:bg-[#eaf6ee] active:scale-[0.98]"
               >
-                <X size={20} />
+                <div className="flex items-center gap-3">
+                  <span className="grid h-8 w-8 place-items-center rounded-lg bg-[#0b5b43] text-white">
+                    <ShoppingBag size={16} />
+                  </span>
+                  <div className="text-left">
+                    <span className="block text-sm font-bold">Your basket</span>
+                    <span className="block text-xs font-normal text-[#657970]">
+                      {itemCount > 0 ? `${itemCount} ${itemCount === 1 ? 'item' : 'items'} · ${formatNaira(subtotal)}` : '0 items'}
+                    </span>
+                  </div>
+                </div>
+                {itemCount > 0 ? (
+                  <span className="rounded-full bg-[#0b5b43] px-2.5 py-0.5 text-xs font-bold text-white">
+                    {itemCount}
+                  </span>
+                ) : (
+                  <ArrowRight size={16} className="text-[#8ba097]" />
+                )}
+              </button>
+
+              {/* My Orders */}
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false)
+                  setAccountOpen(true)
+                }}
+                className="flex w-full items-center justify-between rounded-xl border border-[#e2eee8] bg-white p-3 text-[#10231c] transition hover:bg-[#eff9f2] active:scale-[0.98]"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="grid h-8 w-8 place-items-center rounded-lg bg-[#eff9f2] text-[#0b8a61]">
+                    <Package size={16} />
+                  </span>
+                  <span className="text-sm font-bold">My Orders</span>
+                </div>
+                {recentOrders.length > 0 ? (
+                  <span className="rounded-full bg-[#0b5b43] px-2 py-0.5 text-xs font-bold text-white">
+                    {recentOrders.length}
+                  </span>
+                ) : (
+                  <ArrowRight size={16} className="text-[#8ba097]" />
+                )}
               </button>
             </div>
 
-            {/* Content List */}
-            <div className="flex-1 space-y-4 overflow-y-auto touch-scroll px-5 py-5 text-sm font-semibold">
-              {/* Sign In / Sign Up */}
-              {!userEmail ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMenuOpen(false)
-                    setAuthModalOpen(true)
-                  }}
-                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0b5b43] py-3 text-sm font-bold text-white shadow-md shadow-[#0b5b43]/20 transition hover:bg-[#074835] active:scale-[0.98]"
-                >
-                  <LogIn size={18} /> Sign In / Sign Up
-                </button>
-              ) : (
-                <div className="rounded-2xl border border-[#cfe6d8] bg-[#eff9f2] p-3.5">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <UserRound size={17} className="text-[#0b8a61] shrink-0" />
-                      <div className="min-w-0">
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-[#0b8a61]">Verified Customer</p>
-                        <p className="truncate text-xs font-bold text-[#10231c]">{userEmail}</p>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setMenuOpen(false)
-                        handleSignOut()
-                      }}
-                      className="shrink-0 text-xs font-bold text-[#b13c2e] hover:underline ml-2"
-                    >
-                      Sign out
-                    </button>
-                  </div>
-                </div>
-              )}
+            {/* Navigation Links requested by user: [Shop Pantry][Delivery Info]Track Order[About Us] */}
+            <div className="space-y-1">
+              <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-[#8a9d94]">Store Menu</p>
 
-              {/* Commerce actions: Your basket & My Orders */}
-              <div className="space-y-2">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#8a9d94]">Cart & Account</p>
-
-                {/* Your basket */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMenuOpen(false)
-                    openBasket()
-                  }}
-                  className="flex w-full items-center justify-between rounded-xl border border-[#cfe6d8] bg-[#f8fcfa] p-3 text-[#10231c] transition hover:bg-[#eaf6ee] active:scale-[0.98]"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="grid h-8 w-8 place-items-center rounded-lg bg-[#0b5b43] text-white">
-                      <ShoppingBag size={16} />
-                    </span>
-                    <div className="text-left">
-                      <span className="block text-sm font-bold">Your basket</span>
-                      <span className="block text-xs font-normal text-[#657970]">
-                        {itemCount > 0 ? `${itemCount} ${itemCount === 1 ? 'item' : 'items'} · ${formatNaira(subtotal)}` : '0 items'}
-                      </span>
-                    </div>
-                  </div>
-                  {itemCount > 0 ? (
-                    <span className="rounded-full bg-[#0b5b43] px-2.5 py-0.5 text-xs font-bold text-white">
-                      {itemCount}
-                    </span>
-                  ) : (
-                    <ArrowRight size={16} className="text-[#8ba097]" />
-                  )}
-                </button>
-
-                {/* My Orders */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMenuOpen(false)
-                    setAccountOpen(true)
-                  }}
-                  className="flex w-full items-center justify-between rounded-xl border border-[#e2eee8] bg-white p-3 text-[#10231c] transition hover:bg-[#eff9f2] active:scale-[0.98]"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="grid h-8 w-8 place-items-center rounded-lg bg-[#eff9f2] text-[#0b8a61]">
-                      <Package size={16} />
-                    </span>
-                    <span className="text-sm font-bold">My Orders</span>
-                  </div>
-                  {recentOrders.length > 0 ? (
-                    <span className="rounded-full bg-[#0b5b43] px-2 py-0.5 text-xs font-bold text-white">
-                      {recentOrders.length}
-                    </span>
-                  ) : (
-                    <ArrowRight size={16} className="text-[#8ba097]" />
-                  )}
-                </button>
-              </div>
-
-              {/* Navigation Links requested by user: [Shop Pantry][Delivery Info]Track Order[About Us] */}
-              <div className="space-y-1">
-                <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-[#8a9d94]">Store Menu</p>
-
-                {/* [Shop Pantry] */}
-                <a
-                  href="#shop"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-[#10231c] transition hover:bg-[#eff9f2] hover:text-[#0b5b43] active:scale-[0.98]"
-                >
-                  <Store size={18} className="text-[#0b8a61]" />
-                  <span>Shop Pantry</span>
-                </a>
-
-                {/* [Delivery Info] */}
-                <a
-                  href="#delivery"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-[#10231c] transition hover:bg-[#eff9f2] hover:text-[#0b5b43] active:scale-[0.98]"
-                >
-                  <Truck size={18} className="text-[#0b8a61]" />
-                  <span>Delivery Info</span>
-                </a>
-
-                {/* Track Order */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMenuOpen(false)
-                    setTrackOpen(true)
-                  }}
-                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[#10231c] transition hover:bg-[#eff9f2] hover:text-[#0b5b43] active:scale-[0.98]"
-                >
-                  <Clock3 size={18} className="text-[#0b8a61]" />
-                  <span>Track Order</span>
-                </button>
-
-                {/* [About Us] */}
-                <a
-                  href="#about"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-[#10231c] transition hover:bg-[#eff9f2] hover:text-[#0b5b43] active:scale-[0.98]"
-                >
-                  <ShieldCheck size={18} className="text-[#0b8a61]" />
-                  <span>About Us</span>
-                </a>
-              </div>
-
-              {/* Direct WhatsApp Call/Chat */}
-              <div className="pt-2">
-                <a
-                  href={`https://wa.me/${STORE_CONFIG.WHATSAPP}?text=Hello%20Mama%20Oche%2C%20I%20have%20an%20inquiry%20about%20an%20order%20in%20Abuja`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 rounded-xl bg-[#25D366]/10 px-3.5 py-2.5 text-xs font-bold text-[#128C7E] transition hover:bg-[#25D366]/20 active:scale-[0.98]"
-                >
-                  <MessageCircle size={17} />
-                  <span>Order on WhatsApp ({STORE_CONFIG.PHONE})</span>
-                </a>
-              </div>
-            </div>
-
-            {/* Footer with Store Admin Portal */}
-            <div className="border-t border-[#e2eee8] p-4">
-              <Link
-                href="/admin"
+              {/* [Shop Pantry] */}
+              <a
+                href="#shop"
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center justify-center gap-2 rounded-xl bg-[#f5faf6] py-2.5 text-xs font-bold text-[#5d7068] transition hover:bg-[#eff9f2] hover:text-[#0b5b43]"
+                className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-[#10231c] transition hover:bg-[#eff9f2] hover:text-[#0b5b43] active:scale-[0.98]"
               >
-                <Lock size={14} /> Store Admin Portal
-              </Link>
+                <Store size={18} className="text-[#0b8a61]" />
+                <span>Shop Pantry</span>
+              </a>
+
+              {/* [Delivery Info] */}
+              <a
+                href="#delivery"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-[#10231c] transition hover:bg-[#eff9f2] hover:text-[#0b5b43] active:scale-[0.98]"
+              >
+                <Truck size={18} className="text-[#0b8a61]" />
+                <span>Delivery Info</span>
+              </a>
+
+              {/* Track Order */}
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false)
+                  setTrackOpen(true)
+                }}
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[#10231c] transition hover:bg-[#eff9f2] hover:text-[#0b5b43] active:scale-[0.98]"
+              >
+                <Clock3 size={18} className="text-[#0b8a61]" />
+                <span>Track Order</span>
+              </button>
+
+              {/* [About Us] */}
+              <a
+                href="#about"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-[#10231c] transition hover:bg-[#eff9f2] hover:text-[#0b5b43] active:scale-[0.98]"
+              >
+                <ShieldCheck size={18} className="text-[#0b8a61]" />
+                <span>About Us</span>
+              </a>
             </div>
-          </aside>
-        </div>
-      </header>
+
+            {/* Direct WhatsApp Call/Chat */}
+            <div className="pt-2">
+              <a
+                href={`https://wa.me/${STORE_CONFIG.WHATSAPP}?text=Hello%20Mama%20Oche%2C%20I%20have%20an%20inquiry%20about%20an%20order%20in%20Abuja`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 rounded-xl bg-[#25D366]/10 px-3.5 py-2.5 text-xs font-bold text-[#128C7E] transition hover:bg-[#25D366]/20 active:scale-[0.98]"
+              >
+                <MessageCircle size={17} />
+                <span>Order on WhatsApp ({STORE_CONFIG.PHONE})</span>
+              </a>
+            </div>
+          </div>
+
+          {/* Footer with Store Admin Portal */}
+          <div className="border-t border-[#e2eee8] p-4">
+            <Link
+              href="/admin"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center justify-center gap-2 rounded-xl bg-[#f5faf6] py-2.5 text-xs font-bold text-[#5d7068] transition hover:bg-[#eff9f2] hover:text-[#0b5b43]"
+            >
+              <Lock size={14} /> Store Admin Portal
+            </Link>
+          </div>
+        </aside>
+      </div>
 
       {/* Hero Section */}
       <section
@@ -860,8 +860,8 @@ export default function Page() {
         </div>
 
         <div className="relative mx-auto w-full max-w-[590px]">
-          <div className="absolute -right-3 -top-5 h-24 w-24 rounded-full bg-[#d7f6e4]" />
-          <div className="absolute -bottom-7 -left-5 h-32 w-32 rounded-full border-[18px] border-[#f0f9f2]" />
+          <div className="absolute right-0 sm:-right-3 -top-5 h-24 w-24 rounded-full bg-[#d7f6e4]" />
+          <div className="absolute -bottom-7 left-0 sm:-left-5 h-32 w-32 rounded-full border-[18px] border-[#f0f9f2]" />
           <div className="relative overflow-hidden rounded-[2rem] rounded-br-[7rem] bg-[#d9f4e3] p-4 shadow-2xl shadow-[#0b5b43]/10">
             <img
               src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=85"
