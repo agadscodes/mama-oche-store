@@ -1,11 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
-
-function cleanSupabaseUrl(url?: string | null): string {
-  if (!url) return ''
-  return url.trim().replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '')
-}
+import { DEFAULT_SUPABASE_URL, DEFAULT_SUPABASE_ANON_KEY, cleanSupabaseUrl } from '@/lib/supabase/client'
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
@@ -13,9 +9,11 @@ export async function GET(request: Request) {
   const next = searchParams.get('next') ?? '/'
 
   if (code) {
-    const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_SUPABASE_URL
     const supabaseKey =
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+      DEFAULT_SUPABASE_ANON_KEY
 
     if (rawUrl && supabaseKey) {
       const supabaseUrl = cleanSupabaseUrl(rawUrl)
