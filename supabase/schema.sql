@@ -96,6 +96,16 @@ CREATE TABLE IF NOT EXISTS public.order_items (
   unit_price NUMERIC NOT NULL CHECK (unit_price >= 0)
 );
 
+-- 6. Carts Table (Cloud Cart Synchronization across Devices)
+CREATE TABLE IF NOT EXISTS public.carts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
+  items JSONB NOT NULL DEFAULT '[]'::jsonb,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_carts_user_id ON public.carts(user_id);
+
 -- ============================================================
 -- Row Level Security (RLS) Policies
 -- ============================================================
@@ -105,6 +115,7 @@ ALTER TABLE public.admin_users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.carts ENABLE ROW LEVEL SECURITY;
 
 -- Helper function to check if current user is an admin
 CREATE OR REPLACE FUNCTION public.is_admin()
@@ -172,6 +183,26 @@ CREATE POLICY "Admins and order owners can view order items" ON public.order_ite
       SELECT 1 FROM public.orders o WHERE o.id = order_items.order_id AND o.user_id = auth.uid()
     )
   );
+
+-- Carts policies (Authenticated users access only their own cart)
+DROP POLICY IF EXISTS "Users can view own cart" ON public.carts;
+CREATE POLICY "Users can view own cart" ON public.carts
+  FOR SELECT USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can insert own cart" ON public.carts;
+CREATE POLICY "Users can insert own cart" ON public.carts
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can update own cart" ON public.carts;
+CREATE POLICY "Users can update own cart" ON public.carts
+  FOR UPDATE USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can delete own cart" ON public.carts;
+CREATE POLICY "Users can delete own cart" ON public.carts
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- Enable Realtime replication for instant cross-device cart updates
+ALTER PUBLICATION supabase_realtime ADD TABLE public.carts;
 
 -- ============================================================
 -- Seed Default Mama Oche Products (if catalog is empty)

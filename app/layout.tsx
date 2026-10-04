@@ -74,22 +74,36 @@ export const metadata: Metadata = {
     email: true,
     address: true,
   },
+  manifest: '/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Mama Oche',
+  },
   icons: {
     icon: [
       {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
+        url: '/icons/icon-192.png',
+        sizes: '192x192',
+        type: 'image/png',
       },
       {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
+        url: '/icons/icon-512.png',
+        sizes: '512x512',
+        type: 'image/png',
       },
       {
         url: '/icon.svg',
         type: 'image/svg+xml',
       },
     ],
-    apple: '/apple-icon.png',
+    apple: [
+      {
+        url: '/icons/apple-touch-icon.png',
+        sizes: '180x180',
+        type: 'image/png',
+      },
+    ],
   },
 }
 
@@ -115,7 +129,7 @@ const jsonLd = {
       url: baseUrl,
       description:
         'Fresh groceries, pantry staples, clean rice, and wholesale provisions delivered same-day across Abuja with pay on arrival.',
-      telephone: '+23480830586248',
+      telephone: '+2349034006248',
       priceRange: '₦₦',
       image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=85',
       address: {
@@ -182,6 +196,19 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (typeof window !== 'undefined' && 'serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js').catch(function(err) {
+                    console.log('ServiceWorker registration failed:', err);
+                  });
+                });
+              }
+            `,
+          }}
         />
       </head>
       <body className="antialiased selection:bg-[#d7f6e4] selection:text-[#0b5b43]">

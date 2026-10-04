@@ -32,6 +32,8 @@ import {
   LogOut,
 } from 'lucide-react'
 import { AuthModal } from '@/components/auth-modal'
+import { MobileBottomNav } from '@/components/mobile-bottom-nav'
+import { PwaInstallPrompt } from '@/components/pwa-install-prompt'
 import { createClient } from '@/lib/supabase/client'
 import {
   CartItem,
@@ -70,6 +72,22 @@ const emptyCustomer: CustomerForm = {
 
 type SortOption = 'featured' | 'price-asc' | 'price-desc' | 'name-asc'
 
+function mergeCarts(local: CartItem[], cloud: CartItem[]): CartItem[] {
+  const map = new Map<string, CartItem>()
+  for (const item of cloud) {
+    map.set(item.id, { ...item })
+  }
+  for (const item of local) {
+    if (map.has(item.id)) {
+      const existing = map.get(item.id)!
+      existing.quantity += item.quantity
+    } else {
+      map.set(item.id, { ...item })
+    }
+  }
+  return Array.from(map.values())
+}
+
 export default function Page() {
   const [products, setProducts] = useState<Product[]>(DEFAULT_PRODUCTS)
   const [activeCategory, setActiveCategory] = useState<string>('All products')
@@ -94,6 +112,8 @@ export default function Page() {
   const [userId, setUserId] = useState<string | null>(null)
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const toastTimerRef = useRef<number | null>(null)
+  const isSyncingRef = useRef(false)
+  const cartDebounceTimerRef = useRef<number | null>(null)
 
   // Tracking State
   const [trackRef, setTrackRef] = useState('')
@@ -172,6 +192,35 @@ export default function Page() {
               setRecentOrders(userOrders as Order[])
             }
           })
+
+        // Sync & auto-merge user cart from Supabase cloud
+        fetch(`/api/cart?userId=${user.id}`)
+          .then((res) => res.json())
+          .then((data) => {
+            const cloudItems: CartItem[] = Array.isArray(data?.items) ? data.items : []
+            setCart((currentLocalCart) => {
+              if (currentLocalCart.length > 0 && cloudItems.length > 0) {
+                const merged = mergeCarts(currentLocalCart, cloudItems)
+                fetch('/api/cart', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ userId: user.id, items: merged }),
+                }).catch(() => {})
+                return merged
+              } else if (currentLocalCart.length > 0 && cloudItems.length === 0) {
+                fetch('/api/cart', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ userId: user.id, items: currentLocalCart }),
+                }).catch(() => {})
+                return currentLocalCart
+              } else if (cloudItems.length > 0) {
+                return cloudItems
+              }
+              return currentLocalCart
+            })
+          })
+          .catch(() => {})
       } else {
         setUserId(null)
         setUserEmail(null)
@@ -191,7 +240,41 @@ export default function Page() {
     }
   }, [])
 
-  // Persist cart to localStorage after hydration
+  // Supabase Realtime channel for live cart synchronization across mobile & desktop
+  useEffect(() => {
+    if (!userId) return
+    const supabase = createClient()
+    if (!supabase) return
+
+    const channel = supabase
+      .channel(`realtime_cart_${userId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'carts',
+          filter: `user_id=eq.${userId}`,
+        },
+        (payload: Record<string, unknown>) => {
+          if (isSyncingRef.current) return
+          const newRow = payload.new as { items?: CartItem[] } | undefined
+          if (newRow && Array.isArray(newRow.items)) {
+            setCart(newRow.items)
+            try {
+              window.localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(newRow.items))
+            } catch {}
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [userId])
+
+  // Persist cart to localStorage after hydration & debounced sync to Supabase cloud
   useEffect(() => {
     if (!cartHydrated) return
     try {
@@ -199,7 +282,27 @@ export default function Page() {
     } catch {
       // ignore write errors
     }
-  }, [cart, cartHydrated])
+
+    if (!userId) return
+
+    if (cartDebounceTimerRef.current) {
+      window.clearTimeout(cartDebounceTimerRef.current)
+    }
+    cartDebounceTimerRef.current = window.setTimeout(() => {
+      isSyncingRef.current = true
+      fetch('/api/cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, items: cart }),
+      })
+        .catch(() => {})
+        .finally(() => {
+          setTimeout(() => {
+            isSyncingRef.current = false
+          }, 600)
+        })
+    }, 400)
+  }, [cart, cartHydrated, userId])
 
   // Prevent background scroll bleed when any modal or drawer is open across all mobile/desktop browsers
   useEffect(() => {
@@ -317,6 +420,9 @@ export default function Page() {
       } catch {
         // ignore storage error
       }
+      if (userId) {
+        fetch(`/api/cart?userId=${userId}`, { method: 'DELETE' }).catch(() => {})
+      }
       showToast('Your basket has been cleared.')
     }
   }
@@ -354,6 +460,12 @@ export default function Page() {
     }
     setUserId(null)
     setUserEmail(null)
+    setRecentOrders([])
+    setCart([])
+    try {
+      window.localStorage.removeItem(STORAGE_KEYS.CART)
+    } catch {}
+    setAccountOpen(false)
     showToast('Signed out of your account.')
   }
 
@@ -493,6 +605,12 @@ export default function Page() {
     setRecentOrders(updatedOrders)
     setCompletedOrder(finalOrder)
     setCart([])
+    try {
+      window.localStorage.removeItem(STORAGE_KEYS.CART)
+    } catch {}
+    if (userId) {
+      fetch(`/api/cart?userId=${userId}`, { method: 'DELETE' }).catch(() => {})
+    }
     setSubmittingOrder(false)
     setCartStep('success')
   }
@@ -553,7 +671,9 @@ export default function Page() {
   }
 
   return (
-    <main className="min-h-screen bg-[#fbfdfb] text-[#10231c] overflow-x-hidden">
+    <main className="min-h-screen bg-[#fbfdfb] text-[#10231c] overflow-x-hidden pb-24 lg:pb-0">
+      {/* PWA Install Guide Banner on Mobile */}
+      <PwaInstallPrompt />
       {/* Top Announcement Bar */}
       <div className="bg-[#0b5b43] px-3 sm:px-5 py-2 sm:py-2.5 text-center text-[11px] sm:text-xs font-medium tracking-wide text-white leading-tight sm:leading-normal">
         Free delivery on orders above ₦{STORE_CONFIG.FREE_DELIVERY_THRESHOLD.toLocaleString('en-NG')} · Same-day doorstep delivery across Abuja
@@ -1290,7 +1410,7 @@ export default function Page() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Order or chat on WhatsApp"
-        className="fixed bottom-safe left-4 sm:left-6 z-40 flex items-center gap-2 rounded-full bg-[#25D366] px-3.5 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-bold text-white shadow-xl shadow-[#25D366]/30 transition hover:-translate-y-0.5 hover:bg-[#1ebd59] active:scale-95"
+        className="fixed bottom-20 lg:bottom-safe left-4 sm:left-6 z-40 flex items-center gap-2 rounded-full bg-[#25D366] px-3.5 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-bold text-white shadow-xl shadow-[#25D366]/30 transition hover:-translate-y-0.5 hover:bg-[#1ebd59] active:scale-95"
       >
         <MessageCircle size={19} />
         <span className="hidden sm:inline">WhatsApp ({STORE_CONFIG.PHONE})</span>
@@ -1301,7 +1421,7 @@ export default function Page() {
         <div
           role="status"
           aria-live="polite"
-          className="fixed bottom-safe left-1/2 z-[60] flex -translate-x-1/2 items-center gap-2.5 sm:gap-3 rounded-2xl border border-[#cfe6d8] bg-white px-4 sm:px-5 py-3 sm:py-4 text-xs sm:text-sm font-semibold text-[#10231c] shadow-2xl shadow-[#0b5b43]/20 max-w-[90vw]"
+          className="fixed bottom-20 lg:bottom-safe left-1/2 z-[60] flex -translate-x-1/2 items-center gap-2.5 sm:gap-3 rounded-2xl border border-[#cfe6d8] bg-white px-4 sm:px-5 py-3 sm:py-4 text-xs sm:text-sm font-semibold text-[#10231c] shadow-2xl shadow-[#0b5b43]/20 max-w-[90vw]"
         >
           <span className="grid h-7 w-7 sm:h-8 sm:w-8 shrink-0 place-items-center rounded-full bg-[#d7f6e4] text-[#0b8a61]">
             ✓
@@ -1480,7 +1600,7 @@ export default function Page() {
                   <label className="block text-xs font-bold uppercase tracking-wider text-[#4f665b]">
                     Phone Number (Optional verification)
                     <input
-                      placeholder="e.g. 0808 305 8624"
+                      placeholder="e.g. 0903 400 6248"
                       value={trackPhone}
                       onChange={(e) => setTrackPhone(e.target.value)}
                       autoComplete="tel"
@@ -2002,7 +2122,7 @@ export default function Page() {
                       <input
                         required
                         type="tel"
-                        placeholder="e.g. 0808 305 8624"
+                        placeholder="e.g. 0903 400 6248"
                         value={customer.phone}
                         onChange={(e) => setCustomer({ ...customer, phone: e.target.value })}
                         autoComplete="tel"
@@ -2208,13 +2328,27 @@ export default function Page() {
         <button
           onClick={openBasket}
           aria-label="Open basket"
-          className="fixed bottom-safe right-4 sm:right-6 z-40 flex items-center gap-2 rounded-full bg-[#0b5b43] px-3.5 py-2.5 text-xs font-bold text-white shadow-lg shadow-[#0b5b43]/30 transition hover:bg-[#074835] active:scale-95 md:hidden"
+          className="fixed bottom-20 right-4 sm:right-6 z-30 flex items-center gap-2 rounded-full bg-[#0b5b43] px-3.5 py-2.5 text-xs font-bold text-white shadow-lg shadow-[#0b5b43]/30 transition hover:bg-[#074835] active:scale-95 md:hidden"
         >
           <ShoppingBag size={15} />
           <span>{itemCount} {itemCount === 1 ? 'item' : 'items'}</span>
           <span className="font-mono font-bold">· {formatNaira(subtotal)}</span>
         </button>
       )}
+
+      {/* Mobile Bottom Tab Navigation (Native App Feel) */}
+      <MobileBottomNav
+        cartCount={itemCount}
+        userEmail={userEmail}
+        onOpenShop={() => {
+          const el = document.getElementById('shop')
+          if (el) el.scrollIntoView({ behavior: 'smooth' })
+        }}
+        onOpenCart={openBasket}
+        onOpenTrack={() => setTrackOpen(true)}
+        onOpenAccount={() => setAccountOpen(true)}
+        onOpenAuth={() => setAuthModalOpen(true)}
+      />
 
       {/* Auth Modal (Google & Email Sign In / Sign Up) */}
       <AuthModal
