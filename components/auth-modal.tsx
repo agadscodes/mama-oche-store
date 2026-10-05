@@ -59,10 +59,12 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
     }
 
     if (tab === 'signup') {
+      const redirectUrl = typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined
       const { data, error: signUpError } = await supabase.auth.signUp({
         email: email.trim(),
         password,
         options: {
+          emailRedirectTo: redirectUrl,
           data: {
             full_name: name.trim(),
           },
