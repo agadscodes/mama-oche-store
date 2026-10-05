@@ -162,18 +162,19 @@ CREATE POLICY "Anyone can create orders" ON public.orders
   FOR INSERT WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Users can view own orders and admins view all" ON public.orders;
-CREATE POLICY "Users can view own orders and admins view all" ON public.orders
-  FOR SELECT USING (
-    public.is_admin() OR (auth.uid() IS NOT NULL AND user_id = auth.uid())
-  );
+DROP POLICY IF EXISTS "Anyone can view orders" ON public.orders;
+CREATE POLICY "Anyone can view orders" ON public.orders
+  FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Admins can update orders" ON public.orders;
-CREATE POLICY "Admins can update orders" ON public.orders
-  FOR UPDATE USING (public.is_admin());
+DROP POLICY IF EXISTS "Anyone can update orders" ON public.orders;
+CREATE POLICY "Anyone can update orders" ON public.orders
+  FOR UPDATE USING (true);
 
 DROP POLICY IF EXISTS "Admins can delete orders" ON public.orders;
-CREATE POLICY "Admins can delete orders" ON public.orders
-  FOR DELETE USING (public.is_admin());
+DROP POLICY IF EXISTS "Anyone can delete orders" ON public.orders;
+CREATE POLICY "Anyone can delete orders" ON public.orders
+  FOR DELETE USING (true);
 
 -- Order Items policies
 DROP POLICY IF EXISTS "Anyone can insert order items" ON public.order_items;
@@ -181,32 +182,40 @@ CREATE POLICY "Anyone can insert order items" ON public.order_items
   FOR INSERT WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Admins and order owners can view order items" ON public.order_items;
-CREATE POLICY "Admins and order owners can view order items" ON public.order_items
-  FOR SELECT USING (
-    public.is_admin() OR EXISTS (
-      SELECT 1 FROM public.orders o WHERE o.id = order_items.order_id AND o.user_id = auth.uid()
-    )
-  );
+DROP POLICY IF EXISTS "Anyone can view order items" ON public.order_items;
+CREATE POLICY "Anyone can view order items" ON public.order_items
+  FOR SELECT USING (true);
 
--- Carts policies (Authenticated users access only their own cart)
+DROP POLICY IF EXISTS "Anyone can delete order items" ON public.order_items;
+CREATE POLICY "Anyone can delete order items" ON public.order_items
+  FOR DELETE USING (true);
+
+-- Carts policies (Allows instant cross-device sync & server-side checkout clearing)
 DROP POLICY IF EXISTS "Users can view own cart" ON public.carts;
-CREATE POLICY "Users can view own cart" ON public.carts
-  FOR SELECT USING (auth.uid() = user_id);
-
 DROP POLICY IF EXISTS "Users can insert own cart" ON public.carts;
-CREATE POLICY "Users can insert own cart" ON public.carts
-  FOR INSERT WITH CHECK (auth.uid() = user_id);
-
 DROP POLICY IF EXISTS "Users can update own cart" ON public.carts;
-CREATE POLICY "Users can update own cart" ON public.carts
-  FOR UPDATE USING (auth.uid() = user_id);
-
 DROP POLICY IF EXISTS "Users can delete own cart" ON public.carts;
-CREATE POLICY "Users can delete own cart" ON public.carts
-  FOR DELETE USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Allow cart sync" ON public.carts;
+CREATE POLICY "Allow cart sync" ON public.carts
+  FOR ALL USING (true) WITH CHECK (true);
 
--- Enable Realtime replication for instant cross-device cart updates
-ALTER PUBLICATION supabase_realtime ADD TABLE public.carts;
+-- Enable Realtime replication safely
+ALTER TABLE public.orders REPLICA IDENTITY FULL;
+ALTER TABLE public.carts REPLICA IDENTITY FULL;
+
+DO $$
+BEGIN
+  BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.orders;
+  EXCEPTION WHEN duplicate_object THEN
+    NULL;
+  END;
+  BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.carts;
+  EXCEPTION WHEN duplicate_object THEN
+    NULL;
+  END;
+END $$;
 
 -- ============================================================
 -- Seed Default Mama Oche Products (if catalog is empty)
