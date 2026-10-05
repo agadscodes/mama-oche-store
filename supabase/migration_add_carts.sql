@@ -32,5 +32,8 @@ DROP POLICY IF EXISTS "Users can delete own cart" ON public.carts;
 CREATE POLICY "Users can delete own cart" ON public.carts
   FOR DELETE USING (auth.uid() = user_id);
 
+-- Set replica identity to FULL so Supabase Realtime emits the entire row payload
+ALTER TABLE public.carts REPLICA IDENTITY FULL;
+
 -- Enable Realtime replication for instant cross-device updates
 ALTER PUBLICATION supabase_realtime ADD TABLE public.carts;

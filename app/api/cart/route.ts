@@ -1,6 +1,44 @@
 import { NextResponse } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 import { getSupabaseAdmin } from '@/lib/supabase/admin'
+import { DEFAULT_SUPABASE_URL, DEFAULT_SUPABASE_ANON_KEY, cleanSupabaseUrl } from '@/lib/supabase/client'
 import { CartItem } from '@/lib/store-data'
+
+async function getSupabaseCartClient() {
+  if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    const admin = getSupabaseAdmin()
+    if (admin) return admin
+  }
+
+  const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_SUPABASE_URL
+  const supabaseKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+    DEFAULT_SUPABASE_ANON_KEY
+
+  if (!rawUrl || !supabaseKey) return null
+  const supabaseUrl = cleanSupabaseUrl(rawUrl)
+  try {
+    const cookieStore = await cookies()
+    return createServerClient(supabaseUrl, supabaseKey, {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll()
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            )
+          } catch {}
+        },
+      },
+    })
+  } catch {
+    return getSupabaseAdmin()
+  }
+}
 
 export async function GET(request: Request) {
   try {
@@ -11,7 +49,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'userId is required' }, { status: 400 })
     }
 
-    const supabase = getSupabaseAdmin()
+    const supabase = await getSupabaseCartClient()
     if (!supabase) {
       return NextResponse.json({ items: [] })
     }
@@ -48,7 +86,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'items must be an array' }, { status: 400 })
     }
 
-    const supabase = getSupabaseAdmin()
+    const supabase = await getSupabaseCartClient()
     if (!supabase) {
       return NextResponse.json({ success: true, offline: true })
     }
@@ -72,7 +110,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, count: items.length })
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Failed to save cart'
-    return NextResponse.json({ error: message }, { status: 500 })
+    return NextResponse.json({ error: message, status: 500 }, { status: 500 })
   }
 }
 
@@ -85,7 +123,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'userId is required' }, { status: 400 })
     }
 
-    const supabase = getSupabaseAdmin()
+    const supabase = await getSupabaseCartClient()
     if (!supabase) {
       return NextResponse.json({ success: true })
     }

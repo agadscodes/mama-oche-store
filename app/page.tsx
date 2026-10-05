@@ -194,33 +194,49 @@ export default function Page() {
           })
 
         // Sync & auto-merge user cart from Supabase cloud
-        fetch(`/api/cart?userId=${user.id}`)
-          .then((res) => res.json())
-          .then((data) => {
-            const cloudItems: CartItem[] = Array.isArray(data?.items) ? data.items : []
+        const syncCloudCart = async () => {
+          try {
+            let cloudItems: CartItem[] = []
+            const { data: cartData } = await supabase
+              .from('carts')
+              .select('items')
+              .eq('user_id', user.id)
+              .maybeSingle()
+
+            if (cartData && Array.isArray(cartData.items)) {
+              cloudItems = cartData.items
+            } else {
+              try {
+                const res = await fetch(`/api/cart?userId=${user.id}`)
+                const data = await res.json()
+                if (Array.isArray(data?.items)) {
+                  cloudItems = data.items
+                }
+              } catch {}
+            }
+
             setCart((currentLocalCart) => {
               if (currentLocalCart.length > 0 && cloudItems.length > 0) {
                 const merged = mergeCarts(currentLocalCart, cloudItems)
-                fetch('/api/cart', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ userId: user.id, items: merged }),
-                }).catch(() => {})
+                supabase
+                  .from('carts')
+                  .upsert({ user_id: user.id, items: merged, updated_at: new Date().toISOString() }, { onConflict: 'user_id' })
+                  .then(() => {})
                 return merged
               } else if (currentLocalCart.length > 0 && cloudItems.length === 0) {
-                fetch('/api/cart', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ userId: user.id, items: currentLocalCart }),
-                }).catch(() => {})
+                supabase
+                  .from('carts')
+                  .upsert({ user_id: user.id, items: currentLocalCart, updated_at: new Date().toISOString() }, { onConflict: 'user_id' })
+                  .then(() => {})
                 return currentLocalCart
               } else if (cloudItems.length > 0) {
                 return cloudItems
               }
               return currentLocalCart
             })
-          })
-          .catch(() => {})
+          } catch {}
+        }
+        syncCloudCart()
       } else {
         setUserId(null)
         setUserEmail(null)
@@ -258,12 +274,33 @@ export default function Page() {
         },
         (payload: Record<string, unknown>) => {
           if (isSyncingRef.current) return
+          if (payload.eventType === 'DELETE') {
+            setCart([])
+            try {
+              window.localStorage.removeItem(STORAGE_KEYS.CART)
+            } catch {}
+            return
+          }
           const newRow = payload.new as { items?: CartItem[] } | undefined
           if (newRow && Array.isArray(newRow.items)) {
             setCart(newRow.items)
             try {
               window.localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(newRow.items))
             } catch {}
+          } else {
+            supabase
+              .from('carts')
+              .select('items')
+              .eq('user_id', userId)
+              .maybeSingle()
+              .then(({ data }) => {
+                if (data && Array.isArray(data.items)) {
+                  setCart(data.items)
+                  try {
+                    window.localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(data.items))
+                  } catch {}
+                }
+              })
           }
         }
       )
@@ -288,19 +325,34 @@ export default function Page() {
     if (cartDebounceTimerRef.current) {
       window.clearTimeout(cartDebounceTimerRef.current)
     }
-    cartDebounceTimerRef.current = window.setTimeout(() => {
+    cartDebounceTimerRef.current = window.setTimeout(async () => {
       isSyncingRef.current = true
-      fetch('/api/cart', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, items: cart }),
-      })
-        .catch(() => {})
-        .finally(() => {
-          setTimeout(() => {
-            isSyncingRef.current = false
-          }, 600)
-        })
+      const supabase = createClient()
+      try {
+        if (supabase) {
+          await supabase
+            .from('carts')
+            .upsert(
+              {
+                user_id: userId,
+                items: cart,
+                updated_at: new Date().toISOString(),
+              },
+              { onConflict: 'user_id' }
+            )
+        }
+      } catch (err) {
+        console.error('Direct cart upsert failed, trying API fallback', err)
+        fetch('/api/cart', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, items: cart }),
+        }).catch(() => {})
+      } finally {
+        setTimeout(() => {
+          isSyncingRef.current = false
+        }, 600)
+      }
     }, 400)
   }, [cart, cartHydrated, userId])
 
