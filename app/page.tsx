@@ -569,6 +569,16 @@ export default function Page() {
     }
   }
 
+  function updateCustomerField<K extends keyof CustomerForm>(field: K, val: CustomerForm[K]) {
+    setCustomer((prev) => {
+      const updated = { ...prev, [field]: val }
+      try {
+        window.localStorage.setItem(STORAGE_KEYS.CUSTOMER, JSON.stringify(updated))
+      } catch {}
+      return updated
+    })
+  }
+
   function openBasket() {
     setCartStep('basket')
     setCheckoutError('')
@@ -2280,7 +2290,7 @@ export default function Page() {
                         type="text"
                         placeholder="e.g. Mrs. Amina Okafor"
                         value={customer.name}
-                        onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
+                        onChange={(e) => updateCustomerField('name', e.target.value)}
                         autoComplete="name"
                         className="mt-1.5 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-3 text-base sm:text-sm font-normal text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
                       />
@@ -2295,7 +2305,7 @@ export default function Page() {
                         type="tel"
                         placeholder="e.g. 0903 400 6248"
                         value={customer.phone}
-                        onChange={(e) => setCustomer({ ...customer, phone: e.target.value })}
+                        onChange={(e) => updateCustomerField('phone', e.target.value)}
                         autoComplete="tel"
                         inputMode="tel"
                         className="mt-1.5 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-3 text-base sm:text-sm font-normal text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
@@ -2310,7 +2320,7 @@ export default function Page() {
                         type="email"
                         placeholder="For order receipt & updates"
                         value={customer.email}
-                        onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
+                        onChange={(e) => updateCustomerField('email', e.target.value)}
                         autoComplete="email"
                         inputMode="email"
                         className="mt-1.5 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-3 text-base sm:text-sm font-normal text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
@@ -2326,7 +2336,7 @@ export default function Page() {
                         rows={3}
                         placeholder="House number, street name, district (e.g. Maitama, Wuse 2, Gwarinpa), and nearest landmark"
                         value={customer.address}
-                        onChange={(e) => setCustomer({ ...customer, address: e.target.value })}
+                        onChange={(e) => updateCustomerField('address', e.target.value)}
                         autoComplete="street-address"
                         className="mt-1.5 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-3 text-base sm:text-sm font-normal text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
                       />
@@ -2340,7 +2350,7 @@ export default function Page() {
                         type="text"
                         placeholder="Gate code, estate name, call before arrival, etc."
                         value={customer.notes}
-                        onChange={(e) => setCustomer({ ...customer, notes: e.target.value })}
+                        onChange={(e) => updateCustomerField('notes', e.target.value)}
                         className="mt-1.5 w-full rounded-xl border border-[#d7e8dc] px-3.5 py-3 text-base sm:text-sm font-normal text-[#10231c] outline-none focus:ring-2 focus:ring-[#b7e9c8]"
                       />
                     </label>

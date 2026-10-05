@@ -1,6 +1,44 @@
 import { NextResponse } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 import { getSupabaseAdmin } from '@/lib/supabase/admin'
+import { DEFAULT_SUPABASE_URL, DEFAULT_SUPABASE_ANON_KEY, cleanSupabaseUrl } from '@/lib/supabase/client'
 import { DEFAULT_PRODUCTS, OrderItem, STORE_CONFIG } from '@/lib/store-data'
+
+async function getSupabaseCheckoutClient() {
+  if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    const admin = getSupabaseAdmin()
+    if (admin) return admin
+  }
+
+  const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_SUPABASE_URL
+  const supabaseKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+    DEFAULT_SUPABASE_ANON_KEY
+
+  if (!rawUrl || !supabaseKey) return null
+  const supabaseUrl = cleanSupabaseUrl(rawUrl)
+  try {
+    const cookieStore = await cookies()
+    return createServerClient(supabaseUrl, supabaseKey, {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll()
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            )
+          } catch {}
+        },
+      },
+    })
+  } catch {
+    return getSupabaseAdmin()
+  }
+}
 
 export async function POST(request: Request) {
   try {
@@ -24,7 +62,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const supabase = getSupabaseAdmin()
+    const supabase = await getSupabaseCheckoutClient()
 
     // 1. Price Verification: Look up products from database or fallback catalog
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -126,6 +164,20 @@ export async function POST(request: Request) {
         }))
 
         await supabase.from('order_items').insert(lineItems)
+
+        // Auto-clear cloud cart so all connected devices update their basket and checkout state immediately
+        if (userId) {
+          await supabase.from('carts').upsert(
+            {
+              user_id: userId,
+              items: [],
+              updated_at: new Date().toISOString(),
+            },
+            { onConflict: 'user_id' }
+          )
+        }
+      } else if (insertError) {
+        console.error('[API Checkout] Insert order error from Supabase:', insertError)
       }
     }
 
