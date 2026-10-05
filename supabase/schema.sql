@@ -171,6 +171,10 @@ DROP POLICY IF EXISTS "Admins can update orders" ON public.orders;
 CREATE POLICY "Admins can update orders" ON public.orders
   FOR UPDATE USING (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can delete orders" ON public.orders;
+CREATE POLICY "Admins can delete orders" ON public.orders
+  FOR DELETE USING (public.is_admin());
+
 -- Order Items policies
 DROP POLICY IF EXISTS "Anyone can insert order items" ON public.order_items;
 CREATE POLICY "Anyone can insert order items" ON public.order_items

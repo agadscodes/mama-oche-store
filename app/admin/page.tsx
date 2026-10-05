@@ -266,6 +266,39 @@ export default function AdminPage() {
     }
   }
 
+  async function deleteOrder(id: string) {
+    if (!confirm('Are you sure you want to permanently delete this order? This cannot be undone.')) return
+    setBusy(true)
+    setMessage('')
+    try {
+      if (supabaseClient && session && !isDemoMode) {
+        // First try client-side delete
+        const { error } = await supabaseClient.from('orders').delete().eq('id', id)
+        if (error) {
+          // If RLS blocked client delete, use the backend API endpoint
+          const res = await fetch(`/api/orders?id=${encodeURIComponent(id)}`, { method: 'DELETE' })
+          const data = await res.json()
+          if (!res.ok) {
+            setMessage('Failed to delete order: ' + (data.error || error.message))
+            setBusy(false)
+            return
+          }
+        }
+        await loadAdminData()
+      } else {
+        const updated = orders.filter((o) => o.id !== id)
+        setOrders(updated)
+        saveLocalOrders(updated)
+      }
+      setMessage('Order deleted successfully.')
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Error deleting order'
+      setMessage(msg)
+    } finally {
+      setBusy(false)
+    }
+  }
+
   // Loading spinner while verifying configuration
   if (session === null && hasEnv) {
     return (
@@ -505,10 +538,10 @@ export default function AdminPage() {
                     </div>
                   )}
 
-                  {/* Status Toggle Buttons */}
-                  <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-[#f0f6f2] pt-3">
-                    <span className="text-xs font-semibold text-[#71847b]">Status:</span>
-                    <div className="flex flex-wrap gap-1.5">
+                  {/* Status Toggle Buttons & Delete Button */}
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#f0f6f2] pt-3">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="mr-1 text-xs font-semibold text-[#71847b]">Status:</span>
                       {(['pending', 'confirmed', 'delivered', 'cancelled'] as const).map(
                         (status) => (
                           <button
@@ -530,6 +563,16 @@ export default function AdminPage() {
                         )
                       )}
                     </div>
+
+                    <button
+                      type="button"
+                      onClick={() => deleteOrder(order.id)}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-[#f5d0cc] bg-[#fdf4f3] px-3.5 py-1.5 text-xs font-bold text-[#b13c2e] transition hover:bg-[#fae2df] hover:border-[#ebb5af] active:scale-95"
+                      title="Permanently delete order"
+                    >
+                      <Trash2 size={13} />
+                      Delete order
+                    </button>
                   </div>
                 </article>
               ))}
