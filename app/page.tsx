@@ -75,12 +75,16 @@ type SortOption = 'featured' | 'price-asc' | 'price-desc' | 'name-asc'
 function mergeCarts(local: CartItem[], cloud: CartItem[]): CartItem[] {
   const map = new Map<string, CartItem>()
   for (const item of cloud) {
-    map.set(item.id, { ...item })
+    if (item.quantity > 0) {
+      map.set(item.id, { ...item })
+    }
   }
   for (const item of local) {
+    if (item.quantity <= 0) continue
     if (map.has(item.id)) {
       const existing = map.get(item.id)!
-      existing.quantity += item.quantity
+      // Take the higher quantity to prevent compounding/doubling on sync
+      existing.quantity = Math.max(existing.quantity, item.quantity)
     } else {
       map.set(item.id, { ...item })
     }
@@ -113,6 +117,7 @@ export default function Page() {
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const toastTimerRef = useRef<number | null>(null)
   const isSyncingRef = useRef(false)
+  const lastSyncedCartRef = useRef<string>('')
   const cartDebounceTimerRef = useRef<number | null>(null)
 
   // Tracking State
@@ -174,11 +179,14 @@ export default function Page() {
       if (user) {
         setUserId(user.id)
         setUserEmail(user.email || null)
-        const metaName = user.user_metadata?.full_name || user.user_metadata?.name
+        const meta = (user.user_metadata || {}) as Record<string, unknown>
+        const metaName = meta.full_name || meta.name
         setCustomer((prev) => ({
           ...prev,
           email: prev.email || user.email || '',
           name: prev.name || (typeof metaName === 'string' ? metaName : ''),
+          phone: prev.phone || (typeof meta.phone === 'string' ? meta.phone : ''),
+          address: prev.address || (typeof meta.address === 'string' ? meta.address : ''),
         }))
 
         // Load user orders from Supabase
@@ -218,23 +226,30 @@ export default function Page() {
             setCart((currentLocalCart) => {
               if (currentLocalCart.length > 0 && cloudItems.length > 0) {
                 const merged = mergeCarts(currentLocalCart, cloudItems)
+                const mergedStr = JSON.stringify(merged)
+                lastSyncedCartRef.current = mergedStr
                 supabase
                   .from('carts')
                   .upsert({ user_id: user.id, items: merged, updated_at: new Date().toISOString() }, { onConflict: 'user_id' })
                   .then(() => {})
                 return merged
               } else if (currentLocalCart.length > 0 && cloudItems.length === 0) {
+                const localStr = JSON.stringify(currentLocalCart)
+                lastSyncedCartRef.current = localStr
                 supabase
                   .from('carts')
                   .upsert({ user_id: user.id, items: currentLocalCart, updated_at: new Date().toISOString() }, { onConflict: 'user_id' })
                   .then(() => {})
                 return currentLocalCart
               } else if (cloudItems.length > 0) {
+                lastSyncedCartRef.current = JSON.stringify(cloudItems)
                 return cloudItems
               }
               return currentLocalCart
             })
-          } catch {}
+          } catch (e) {
+            console.error('Error syncing cart on login:', e)
+          }
         }
         syncCloudCart()
       } else {
@@ -274,18 +289,30 @@ export default function Page() {
         },
         (payload: Record<string, unknown>) => {
           if (isSyncingRef.current) return
+
           if (payload.eventType === 'DELETE') {
+            lastSyncedCartRef.current = JSON.stringify([])
             setCart([])
             try {
               window.localStorage.removeItem(STORAGE_KEYS.CART)
             } catch {}
             return
           }
+
           const newRow = payload.new as { items?: CartItem[] } | undefined
           if (newRow && Array.isArray(newRow.items)) {
+            const incomingStr = JSON.stringify(newRow.items)
+            // Suppress echo if already identical
+            if (incomingStr === lastSyncedCartRef.current) return
+
+            lastSyncedCartRef.current = incomingStr
             setCart(newRow.items)
             try {
-              window.localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(newRow.items))
+              if (newRow.items.length > 0) {
+                window.localStorage.setItem(STORAGE_KEYS.CART, incomingStr)
+              } else {
+                window.localStorage.removeItem(STORAGE_KEYS.CART)
+              }
             } catch {}
           } else {
             supabase
@@ -295,9 +322,16 @@ export default function Page() {
               .maybeSingle()
               .then(({ data }) => {
                 if (data && Array.isArray(data.items)) {
+                  const fetchedStr = JSON.stringify(data.items)
+                  if (fetchedStr === lastSyncedCartRef.current) return
+                  lastSyncedCartRef.current = fetchedStr
                   setCart(data.items)
                   try {
-                    window.localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(data.items))
+                    if (data.items.length > 0) {
+                      window.localStorage.setItem(STORAGE_KEYS.CART, fetchedStr)
+                    } else {
+                      window.localStorage.removeItem(STORAGE_KEYS.CART)
+                    }
                   } catch {}
                 }
               })
@@ -311,22 +345,62 @@ export default function Page() {
     }
   }, [userId])
 
+  // Supabase Realtime channel for live orders synchronization across mobile & desktop
+  useEffect(() => {
+    if (!userId) return
+    const supabase = createClient()
+    if (!supabase) return
+
+    const channel = supabase
+      .channel(`realtime_orders_${userId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'orders',
+          filter: `user_id=eq.${userId}`,
+        },
+        (payload: Record<string, unknown>) => {
+          const newOrder = payload.new as Order | undefined
+          if (newOrder && newOrder.id) {
+            setRecentOrders((prev) => [newOrder, ...prev.filter((o) => o.id !== newOrder.id)])
+            saveLocalOrders([newOrder, ...getLocalOrders().filter((o) => o.id !== newOrder.id)])
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [userId])
+
   // Persist cart to localStorage after hydration & debounced sync to Supabase cloud
   useEffect(() => {
     if (!cartHydrated) return
+    const currentCartStr = JSON.stringify(cart)
     try {
-      window.localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(cart))
+      if (cart.length > 0) {
+        window.localStorage.setItem(STORAGE_KEYS.CART, currentCartStr)
+      } else {
+        window.localStorage.removeItem(STORAGE_KEYS.CART)
+      }
     } catch {
       // ignore write errors
     }
 
     if (!userId) return
 
+    // Suppress upload if cart is already in sync with remote
+    if (currentCartStr === lastSyncedCartRef.current) return
+
     if (cartDebounceTimerRef.current) {
       window.clearTimeout(cartDebounceTimerRef.current)
     }
     cartDebounceTimerRef.current = window.setTimeout(async () => {
       isSyncingRef.current = true
+      lastSyncedCartRef.current = currentCartStr
       const supabase = createClient()
       try {
         if (supabase) {
@@ -351,7 +425,7 @@ export default function Page() {
       } finally {
         setTimeout(() => {
           isSyncingRef.current = false
-        }, 600)
+        }, 300)
       }
     }, 400)
   }, [cart, cartHydrated, userId])
@@ -466,13 +540,29 @@ export default function Page() {
   function clearCart() {
     if (cart.length === 0) return
     if (window.confirm('Are you sure you want to remove all items from your basket?')) {
-      setCart([])
+      const emptyItems: CartItem[] = []
+      lastSyncedCartRef.current = JSON.stringify(emptyItems)
+      setCart(emptyItems)
       try {
         window.localStorage.removeItem(STORAGE_KEYS.CART)
       } catch {
         // ignore storage error
       }
       if (userId) {
+        const supabase = createClient()
+        if (supabase) {
+          supabase
+            .from('carts')
+            .upsert(
+              {
+                user_id: userId,
+                items: emptyItems,
+                updated_at: new Date().toISOString(),
+              },
+              { onConflict: 'user_id' }
+            )
+            .then(() => {})
+        }
         fetch(`/api/cart?userId=${userId}`, { method: 'DELETE' }).catch(() => {})
       }
       showToast('Your basket has been cleared.')
@@ -656,11 +746,40 @@ export default function Page() {
     saveLocalOrders(updatedOrders)
     setRecentOrders(updatedOrders)
     setCompletedOrder(finalOrder)
-    setCart([])
+
+    const emptyItems: CartItem[] = []
+    lastSyncedCartRef.current = JSON.stringify(emptyItems)
+    setCart(emptyItems)
     try {
       window.localStorage.removeItem(STORAGE_KEYS.CART)
     } catch {}
+
     if (userId) {
+      const supabase = createClient()
+      if (supabase) {
+        supabase
+          .from('carts')
+          .upsert(
+            {
+              user_id: userId,
+              items: emptyItems,
+              updated_at: new Date().toISOString(),
+            },
+            { onConflict: 'user_id' }
+          )
+          .then(() => {})
+
+        // Save delivery details to customer profile in Supabase so it auto-fills on all devices
+        supabase.auth
+          .updateUser({
+            data: {
+              full_name: customer.name,
+              phone: customer.phone,
+              address: customer.address,
+            },
+          })
+          .catch(() => {})
+      }
       fetch(`/api/cart?userId=${userId}`, { method: 'DELETE' }).catch(() => {})
     }
     setSubmittingOrder(false)

@@ -37,3 +37,4 @@ ALTER TABLE public.carts REPLICA IDENTITY FULL;
 
 -- Enable Realtime replication for instant cross-device updates
 ALTER PUBLICATION supabase_realtime ADD TABLE public.carts;
+
